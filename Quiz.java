@@ -38,7 +38,7 @@ public class Quiz extends JFrame {
         gbc.insets = new Insets(10, 10, 10, 10);
 
         // Textfeld zur Anzeige der aktuellen Frage
-        JTextArea frageFeld = new JTextArea(fragenListe.get(aktuelleFrageIndex).frage, 3, 3);
+        JTextArea frageFeld = new JTextArea(fragenListe.get(aktuelleFrageIndex).frage, 4, 3);
         frageFeld.setLineWrap(true); // Zeilenumbruch aktivieren
         frageFeld.setWrapStyleWord(true); // Wörter nicht mitten im Wort umbrechen
         frageFeld.setEditable(false); // Textfeld nicht bearbeitbar
@@ -90,6 +90,27 @@ public class Quiz extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 dispose(); // Fenster schließen
                 new Hauptmenu(); // Neues Hauptmenü öffnen
+            }
+        });
+
+        //Überspringe Button
+        JButton FrageUeberspringenButton = new JButton("Diese Frage überspringen");
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.NONE;
+        panel.add(FrageUeberspringenButton, gbc);
+
+        //Actionlistener für Überspringen Button
+        FrageUeberspringenButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                aktuelleFrageIndex++;
+                frageFeld.setText(fragenListe.get(aktuelleFrageIndex).frage);
+                antwortA.setText(fragenListe.get(aktuelleFrageIndex).antworten[0]);
+                antwortB.setText(fragenListe.get(aktuelleFrageIndex).antworten[1]);
+                antwortC.setText(fragenListe.get(aktuelleFrageIndex).antworten[2]);
+                antwortD.setText(fragenListe.get(aktuelleFrageIndex).antworten[3]);
             }
         });
 
