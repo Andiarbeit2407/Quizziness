@@ -1,83 +1,99 @@
-// Importieren der benötigten Klassen für GUI, Layout, Event-Handling und Dateiverarbeitung
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
-// Klasse für die Eingabe neuer Quizfragen
 public class QuizEingabe extends JFrame {
 
-	// Textfeld für die Eingabe der Frage
 	private JTextField frageFeld;
-
-	// Array von Textfeldern für die vier Antwortmöglichkeiten
 	private JTextField[] antwortenFelder = new JTextField[4];
+	private JCheckBox[] loesungsFeld = new JCheckBox[4];
 
-	// Konstruktor zum Erstellen des Eingabefensters
 	public QuizEingabe() {
 		setTitle("Quiz Eingabe");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(600, 400);
+		setSize(600, 500);
 		setLocationRelativeTo(null);
 
-		// Panel mit einem GridLayout zur Anordnung der Felder und Buttons
-		JPanel panel = new JPanel(new GridLayout(7, 1));
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Innenabstand
 
-		// Textfeld zur Eingabe der Frage
-		frageFeld = new JTextField(30);
+		// Frage
 		panel.add(new JLabel("Frage:"));
+		frageFeld = new JTextField(30);
 		panel.add(frageFeld);
 
-		// Textfelder zur Eingabe der vier Antwortmöglichkeiten
+		// Antworten und Lösungen
 		for (int i = 0; i < 4; i++) {
-			antwortenFelder[i] = new JTextField(30);
-			panel.add(new JLabel("Antwort " + (char) ('A' + i) + ":"));
-			panel.add(antwortenFelder[i]);
+			JPanel antwortPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+			antwortenFelder[i] = new JTextField(20);
+			loesungsFeld[i] = new JCheckBox("Richtig");
+			antwortPanel.add(new JLabel("Antwort " + (char) ('A' + i) + ":"));
+			antwortPanel.add(antwortenFelder[i]);
+			antwortPanel.add(loesungsFeld[i]);
+			panel.add(antwortPanel);
 		}
 
-		// Button zum Speichern der eingegebenen Frage
+		// Buttons
+		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		JButton speichernButton = new JButton("Frage speichern");
 		speichernButton.addActionListener(this::speichernFrage);
-		panel.add(speichernButton);
-
-		// Button zum Zurückkehren ins Hauptmenü
 		JButton zurueckButton = new JButton("Zurück zum Hauptmenü");
 		zurueckButton.addActionListener(this::zurueckZumHauptmenue);
-		panel.add(zurueckButton);
+		buttonPanel.add(speichernButton);
+		buttonPanel.add(zurueckButton);
+		panel.add(Box.createVerticalStrut(10));
+		panel.add(buttonPanel);
 
-		// Panel dem Fenster hinzufügen
 		add(panel);
-
-		// Fenster sichtbar machen
 		setVisible(true);
 	}
 
-	// Methode zum Speichern der Frage und Antworten in eine Datei
 	private void speichernFrage(ActionEvent e) {
-		String frage = frageFeld.getText();
+		String frage = frageFeld.getText().trim();
 		String[] antworten = new String[4];
+		boolean[] loesungen = new boolean[4];
+		String[] loesungenString = new String[4];
 
-		// Antworttexte mit "A)", "B)", "C)" und "D)" prefixen
 		for (int i = 0; i < 4; i++) {
-			antworten[i] = (char) ('A' + i) + ") " + antwortenFelder[i].getText();
+			antworten[i] = (char) ('A' + i) + ") " + antwortenFelder[i].getText().trim();
+			loesungen[i] = loesungsFeld[i].isSelected();
+			loesungenString[i] = (char) ('E' + i) + ")" + loesungen[i];
 		}
 
-		// Überprüfen, ob alle Felder ausgefüllt wurden
-		if (frage.isEmpty() || antworten[0].isEmpty() || antworten[1].isEmpty() || antworten[2].isEmpty() || antworten[3].isEmpty()) {
+		if (frage.isEmpty() || antworten[0].isEmpty() || antworten[1].isEmpty() ||
+				antworten[2].isEmpty() || antworten[3].isEmpty()) {
 			JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen!");
 			return;
 		}
 
-		// Speichern der Frage und Antworten in die Datei "fragen.txt"
+		boolean mindestensEineRichtige = false;
+		for (boolean l : loesungen) {
+			if (l) {
+				mindestensEineRichtige = true;
+				break;
+			}
+		}
+		if (!mindestensEineRichtige) {
+			JOptionPane.showMessageDialog(this, "Bitte mindestens eine richtige Antwort markieren!");
+			return;
+		}
+
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter("fragen.txt", true))) {
 			writer.write(frage + "\n");
 			for (String antwort : antworten) {
 				writer.write(antwort + "\n");
 			}
-			writer.write("\n"); // Leere Zeile zwischen den Fragen
+			writer.write("Richtige Antworten: ");
+			for (int i = 0; i < 4; i++) {
+				if (loesungen[i]) {
+					writer.write((char) ('A' + i) + " ");
+				}
+			}
+			writer.write("\n\n");
 			JOptionPane.showMessageDialog(this, "Frage gespeichert!");
 		} catch (IOException ex) {
 			ex.printStackTrace();
@@ -85,15 +101,12 @@ public class QuizEingabe extends JFrame {
 		}
 	}
 
-	// Methode zum Zurückkehren ins Hauptmenü
 	private void zurueckZumHauptmenue(ActionEvent e) {
-		dispose(); // Aktuelles Fenster schließen
-		new Hauptmenu(); // Neues Hauptmenü öffnen
+		dispose();
+		new Hauptmenu();
 	}
 
-	// Main-Methode zum Starten der Anwendung
 	public static void main(String[] args) {
-		// Startet die GUI im Event-Dispatch-Thread
 		SwingUtilities.invokeLater(QuizEingabe::new);
 	}
 }
