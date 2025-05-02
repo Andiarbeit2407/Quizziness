@@ -7,9 +7,12 @@ public class QuizDaten {
 	// Array mit den Antwortmöglichkeiten
 	public String[] antworten;
 
+	public boolean[] loesung;
+
 	// Konstruktor zum Erstellen eines QuizDaten-Objekts mit Frage und Antworten
-	public QuizDaten(String frage, String[] antworten) {
+	public QuizDaten(String frage, String[] antworten, boolean[] loesung) {
 		this.frage = frage;
 		this.antworten = antworten;
+		this.loesung = loesung;
 	}
 }
