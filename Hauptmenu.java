@@ -66,7 +66,27 @@ public class Hauptmenu extends JFrame {
             }
         });
 
+        buttonPanel.setBackground(StyleManager.getColor("background.color", Color.WHITE));
+        Color buttonAndTextBg = StyleManager.getColor("answer.color", Color.LIGHT_GRAY);
+        Color textColor = StyleManager.getColor("font.color", Color.WHITE);
+
+        // Durchläuft alle Komponenten im Panel
+        for (Component comp : buttonPanel.getComponents()) {
+            if (comp instanceof JButton || comp instanceof JTextField) {
+                comp.setBackground(buttonAndTextBg);
+                comp.setForeground(textColor);
+            }
+        }
+
         // Sichtbarmachen des Fensters nach dem Aufbau aller Komponenten
         setVisible(true);
     }
-}
+
+// Main-Methode zum Starten der Anwendung
+        public static void main(String[] args) {
+            // Load the external style configuration before starting the GUI
+            StyleManager.loadConfig("config.properties");
+            // Startet die GUI im Event-Dispatch-Thread
+            SwingUtilities.invokeLater(Hauptmenu::new);
+        }
+    }

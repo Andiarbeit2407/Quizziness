@@ -1,5 +1,6 @@
 // Importieren der benötigten Klassen für GUI-Elemente und Event-Handling
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 
 // Definition der Klasse Login, die ein Fenster (JFrame) darstellt
@@ -37,6 +38,10 @@ public class Login extends JFrame {
         // Fügt das Panel dem Fenster hinzu
         add(panel);
 
+        getRootPane().setDefaultButton(loginButton);
+
+
+
         // Fügt dem Login-Button einen ActionListener hinzu
         loginButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -56,13 +61,29 @@ public class Login extends JFrame {
             }
         });
 
+        panel.setBackground(StyleManager.getColor("background.color", Color.WHITE));
+        Color buttonAndTextBg = StyleManager.getColor("answer.color", Color.LIGHT_GRAY);
+        Color textColor = StyleManager.getColor("font.color", Color.WHITE);
+
+        // Durchläuft alle Komponenten im Panel
+        for (Component comp : panel.getComponents()) {
+            if (comp instanceof JButton || comp instanceof JTextField) {
+                comp.setBackground(buttonAndTextBg);
+                comp.setForeground(textColor);
+            }
+        }
+
         // Macht das Fenster sichtbar
         setVisible(true);
     }
 
     // Main-Methode zum Starten der Anwendung
     public static void main(String[] args) {
-        // Startet das Login-Fenster im Event-Dispatch-Thread
-        SwingUtilities.invokeLater(() -> new Login());
+        // Lade externe Style-Konfiguration, falls vorhanden
+        StyleManager.loadConfig("config.properties");
+
+        // Starte die Login-GUI im Event-Dispatch-Thread
+        SwingUtilities.invokeLater(Login::new);
     }
+
 }

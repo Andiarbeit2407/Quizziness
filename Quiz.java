@@ -114,16 +114,32 @@ public class Quiz extends JFrame {
             }
         });
 
+        panel.setBackground(StyleManager.getColor("background.color", Color.WHITE));
+        Color buttonAndTextBg = StyleManager.getColor("answer.color", Color.LIGHT_GRAY);
+        Color textColor = StyleManager.getColor("font.color", Color.WHITE);
+
+        // Durchläuft alle Komponenten im Panel
+        for (Component comp : panel.getComponents()) {
+            if (comp instanceof JButton || comp instanceof JTextField) {
+                comp.setBackground(buttonAndTextBg);
+                comp.setForeground(textColor);
+            }
+        }
+
         // Panel dem Fenster hinzufügen
         add(panel);
 
         // Fenster sichtbar machen
         setVisible(true);
     }
+    
+    
 
     // Main-Methode zum Starten der Anwendung
     public static void main(String[] args) {
-        // Startet das Quiz im Event-Dispatch-Thread
-        SwingUtilities.invokeLater(Quiz::new);
+        // Load the external style configuration before starting the GUI
+        StyleManager.loadConfig("config.properties");
+        // Startet die GUI im Event-Dispatch-Thread
+        SwingUtilities.invokeLater(Hauptmenu::new);
     }
 }
