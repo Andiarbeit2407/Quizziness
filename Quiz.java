@@ -69,12 +69,16 @@ public class Quiz extends JFrame {
         gbc.gridwidth = 1;
         panel.add(antwortC, gbc);
 
+
+
         // Button für Antwort D erstellen
         JButton antwortD = new JButton(fragenListe.get(aktuelleFrageIndex).antworten[3]);
         gbc.gridx = 1;
         gbc.gridy = 2;
         gbc.gridwidth = 1;
         panel.add(antwortD, gbc);
+
+
 
         // Button zum Zurückkehren ins Hauptmenü
         JButton hauptmenuButton = new JButton("Zurück zum Hauptmenü");
@@ -105,12 +109,35 @@ public class Quiz extends JFrame {
         FrageUeberspringenButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                aktuelleFrageIndex++;
-                frageFeld.setText(fragenListe.get(aktuelleFrageIndex).frage);
-                antwortA.setText(fragenListe.get(aktuelleFrageIndex).antworten[0]);
-                antwortB.setText(fragenListe.get(aktuelleFrageIndex).antworten[1]);
-                antwortC.setText(fragenListe.get(aktuelleFrageIndex).antworten[2]);
-                antwortD.setText(fragenListe.get(aktuelleFrageIndex).antworten[3]);
+                verarbeiteAntwort(5, frageFeld,  antwortA,  antwortB,  antwortC,  antwortD);
+            }
+        });
+//Actionlistener für Button Anwtort A
+        antwortA.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                verarbeiteAntwort(0, frageFeld,  antwortA,  antwortB,  antwortC,  antwortD);
+            }
+        });
+//Actionlistener für Button Anwtort B
+        antwortB.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                verarbeiteAntwort(1, frageFeld,  antwortA,  antwortB,  antwortC,  antwortD);
+            }
+        });
+//Actionlistener für Button Anwtort C
+        antwortC.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                verarbeiteAntwort(2, frageFeld,  antwortA,  antwortB,  antwortC,  antwortD);
+            }
+        });
+//Actionlistener für Button Anwtort D
+        antwortD.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                verarbeiteAntwort(3, frageFeld,  antwortA,  antwortB,  antwortC,  antwortD);
             }
         });
 
@@ -134,6 +161,41 @@ public class Quiz extends JFrame {
     }
     
     
+
+    // Methode zur Auswertung und Anzeige der nächsten Frage
+    private void verarbeiteAntwort(int ausgewaehlteAnwort, JTextArea frageFeld, JButton antwortA, JButton antwortB, JButton antwortC, JButton antwortD) {
+        if(ausgewaehlteAnwort != 5) {
+            QuizDaten aktuelleFrage = fragenListe.get(aktuelleFrageIndex);
+            boolean istRichtig = aktuelleFrage.loesung[ausgewaehlteAnwort];
+
+            // Rückmeldung geben
+            if (istRichtig) {
+                JOptionPane.showMessageDialog(this, "Richtig!");
+            } else {
+                JOptionPane.showMessageDialog(this, "Falsch!");
+            }
+        }
+        // Nächste Frage anzeigen
+        aktuelleFrageIndex++;
+        if (aktuelleFrageIndex >= fragenListe.size()) {
+            JOptionPane.showMessageDialog(this, "Quiz beendet.");
+            dispose();
+            new Hauptmenu();
+            return;
+        }
+
+        QuizDaten naechsteFrage = fragenListe.get(aktuelleFrageIndex);
+        frageFeld.setText(naechsteFrage.frage);
+        antwortA.setText(naechsteFrage.antworten[0]);
+        antwortB.setText(naechsteFrage.antworten[1]);
+        antwortC.setText(naechsteFrage.antworten[2]);
+        antwortD.setText(naechsteFrage.antworten[3]);
+    }
+
+
+
+
+
 
     // Main-Methode zum Starten der Anwendung
     public static void main(String[] args) {
