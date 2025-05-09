@@ -3,6 +3,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.List;
 
 // Definition der Klasse Quiz, die ein Fenster (JFrame) darstellt
@@ -47,6 +49,9 @@ public class Quiz extends JFrame {
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         panel.add(frageFeld, gbc);
+
+
+
 
         // Button für Antwort A erstellen
         JButton antwortA = new JButton(fragenListe.get(aktuelleFrageIndex).antworten[0]);
@@ -153,6 +158,14 @@ public class Quiz extends JFrame {
             }
         }
 
+        // Dynamische Schriftanpassung bei Größenänderung
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                aktualisiereFonts(frageFeld,new JButton[]{antwortA, antwortB, antwortC, antwortD, hauptmenuButton, FrageUeberspringenButton});
+            }
+        });
+
         // Panel dem Fenster hinzufügen
         add(panel);
 
@@ -203,5 +216,18 @@ public class Quiz extends JFrame {
         StyleManager.loadConfig("config.properties");
         // Startet die GUI im Event-Dispatch-Thread
         SwingUtilities.invokeLater(Hauptmenu::new);
+    }
+
+    private void aktualisiereFonts(JTextArea frageFeld, JButton[] buttons){
+        int breite = getWidth();
+        float faktor = breite / 500.0f; // 500 ist die ursprüngliche Fensterbreite
+
+        int frageFontSize = Math.round(15 * faktor);
+        int buttonFontSize = Math.round(12 * faktor);
+
+        frageFeld.setFont(new Font("Arial", Font.BOLD, frageFontSize));
+        for (JButton b : buttons) {
+            b.setFont(new Font("Arial", Font.PLAIN, buttonFontSize));
+        }
     }
 }
