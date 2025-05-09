@@ -10,6 +10,7 @@ public class QuizEingabe extends JFrame {
 	private JTextField frageFeld;
 	private JTextField[] antwortenFelder = new JTextField[4];
 	private JCheckBox[] loesungsFeld = new JCheckBox[4];
+	private JComboBox<String> kategorieAuswahl;
 
 	public QuizEingabe() {
 		setTitle("Quiz Eingabe");
@@ -19,7 +20,13 @@ public class QuizEingabe extends JFrame {
 
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Innenabstand
+		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+		// Kategorieauswahl
+		panel.add(new JLabel("Kategorie:"));
+		String[] kategorien = {"Mathe", "Geschichte", "Informatik"};
+		kategorieAuswahl = new JComboBox<>(kategorien);
+		panel.add(kategorieAuswahl);
 
 		// Frage
 		panel.add(new JLabel("Frage:"));
@@ -48,11 +55,11 @@ public class QuizEingabe extends JFrame {
 		panel.add(Box.createVerticalStrut(10));
 		panel.add(buttonPanel);
 
+		// Style
 		buttonPanel.setBackground(StyleManager.getColor("background.color", Color.WHITE));
 		Color buttonAndTextBg = StyleManager.getColor("answer.color", Color.LIGHT_GRAY);
 		Color textColor = StyleManager.getColor("font.color", Color.WHITE);
 
-		// Durchläuft alle Komponenten im Panel
 		for (Component comp : buttonPanel.getComponents()) {
 			if (comp instanceof JButton || comp instanceof JTextField) {
 				comp.setBackground(buttonAndTextBg);
@@ -68,14 +75,13 @@ public class QuizEingabe extends JFrame {
 		String frage = frageFeld.getText().trim();
 		String[] antworten = new String[4];
 		boolean[] loesungen = new boolean[4];
-		String[] loesungenString = new String[4];
 
 		for (int i = 0; i < 4; i++) {
 			antworten[i] = (char) ('A' + i) + ") " + antwortenFelder[i].getText().trim();
 			loesungen[i] = loesungsFeld[i].isSelected();
-			loesungenString[i] = (char) ('E' + i) + ")" + loesungen[i];
 		}
 
+		// Validierung
 		if (frage.isEmpty() || antworten[0].isEmpty() || antworten[1].isEmpty() ||
 				antworten[2].isEmpty() || antworten[3].isEmpty()) {
 			JOptionPane.showMessageDialog(this, "Bitte alle Felder ausfüllen!");
@@ -89,12 +95,32 @@ public class QuizEingabe extends JFrame {
 				break;
 			}
 		}
+
 		if (!mindestensEineRichtige) {
 			JOptionPane.showMessageDialog(this, "Bitte mindestens eine richtige Antwort markieren!");
 			return;
 		}
 
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter("fragen.txt", true))) {
+		// Datei anhand der Kategorie bestimmen
+		String kategorie = (String) kategorieAuswahl.getSelectedItem();
+			String dateiname;
+			switch (kategorie) {
+				case "Mathe":
+					dateiname = "Mathe.txt";
+					break;
+				case "Geschichte":
+					dateiname = "geschichte_fragen.txt";
+					break;
+				case "Informatik":
+					dateiname = "informatik_fragen.txt";
+					break;
+				default:
+					dateiname = "fragen.txt";
+					break;
+			};
+
+		// Schreiben in Datei
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(dateiname, true))) {
 			writer.write(frage + "\n");
 			for (String antwort : antworten) {
 				writer.write(antwort + "\n");
@@ -106,7 +132,7 @@ public class QuizEingabe extends JFrame {
 				}
 			}
 			writer.write("\n\n");
-			JOptionPane.showMessageDialog(this, "Frage gespeichert!");
+			JOptionPane.showMessageDialog(this, "Frage gespeichert in '" + dateiname + "'!");
 		} catch (IOException ex) {
 			ex.printStackTrace();
 			JOptionPane.showMessageDialog(this, "Fehler beim Speichern der Frage!");
@@ -118,11 +144,9 @@ public class QuizEingabe extends JFrame {
 		new Hauptmenu();
 	}
 
-	// Main-Methode zum Starten der Anwendung
+	// Main-Methode (optional, falls direkt testbar)
 	public static void main(String[] args) {
-		// Load the external style configuration before starting the GUI
 		StyleManager.loadConfig("config.properties");
-		// Startet die GUI im Event-Dispatch-Thread
-		SwingUtilities.invokeLater(Hauptmenu::new);
+		SwingUtilities.invokeLater(QuizEingabe::new);
 	}
 }

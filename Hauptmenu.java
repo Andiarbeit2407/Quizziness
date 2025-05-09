@@ -52,10 +52,29 @@ public class Hauptmenu extends JFrame {
         // Beim Klicken wird ein neues Quiz-Fenster geöffnet und das Hauptmenü geschlossen
         quizButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                new Quiz();
-                dispose();
+                String[] kategorien = {"Mathe", "Geschichte", "Informatik"};
+                String auswahl = (String) JOptionPane.showInputDialog(
+                        Hauptmenu.this,
+                        "Wähle eine Quiz-Kategorie:",
+                        "Kategorie auswählen",
+                        JOptionPane.PLAIN_MESSAGE,
+                        null,
+                        kategorien,
+                        kategorien[0]);
+
+                if (auswahl != null) {
+                    dispose();
+                    switch (auswahl) {
+                        case "Mathe":
+                            new MatheQuiz();
+                            break;
+                        default:
+                            JOptionPane.showMessageDialog(Hauptmenu.this, "Unbekannte Kategorie.");
+                    }
+                }
             }
         });
+
 
         // Hinzufügen eines ActionListeners zum "Frage hinzufügen"-Button
         // Beim Klicken wird das Fenster zur Frageneingabe geöffnet und das Hauptmenü geschlossen
@@ -82,11 +101,11 @@ public class Hauptmenu extends JFrame {
         setVisible(true);
     }
 
-// Main-Methode zum Starten der Anwendung
-        public static void main(String[] args) {
-            // Load the external style configuration before starting the GUI
-            StyleManager.loadConfig("config.properties");
-            // Startet die GUI im Event-Dispatch-Thread
-            SwingUtilities.invokeLater(Hauptmenu::new);
-        }
+    // Main-Methode zum Starten der Anwendung
+    public static void main(String[] args) {
+        // Load the external style configuration before starting the GUI
+        StyleManager.loadConfig("config.properties");
+        // Startet die GUI im Event-Dispatch-Thread
+        SwingUtilities.invokeLater(Hauptmenu::new);
     }
+}
