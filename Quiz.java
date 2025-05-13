@@ -44,13 +44,17 @@ public abstract class Quiz extends JFrame {
         JButton antwortD = new JButton(fragenListe.get(aktuelleFrageIndex).antworten[3]);
 
         gbc.gridwidth = 1;
-        gbc.gridx = 0; gbc.gridy = 1;
+        gbc.gridx = 0;
+        gbc.gridy = 1;
         panel.add(antwortA, gbc);
-        gbc.gridx = 1; gbc.gridy = 1;
+        gbc.gridx = 1;
+        gbc.gridy = 1;
         panel.add(antwortB, gbc);
-        gbc.gridx = 0; gbc.gridy = 2;
+        gbc.gridx = 0;
+        gbc.gridy = 2;
         panel.add(antwortC, gbc);
-        gbc.gridx = 1; gbc.gridy = 2;
+        gbc.gridx = 1;
+        gbc.gridy = 2;
         panel.add(antwortD, gbc);
 
         JButton hauptmenuButton = new JButton("Zurück zum Hauptmenü");
@@ -97,7 +101,7 @@ public abstract class Quiz extends JFrame {
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                aktualisiereFonts(frageFeld,new JButton[]{antwortA, antwortB, antwortC, antwortD, hauptmenuButton, FrageUeberspringenButton});
+                aktualisiereFonts(frageFeld, new JButton[]{antwortA, antwortB, antwortC, antwortD, hauptmenuButton, FrageUeberspringenButton});
             }
         });
 
@@ -133,18 +137,9 @@ public abstract class Quiz extends JFrame {
 
     // 🔁 Muss von Unterklassen überschrieben werden
     protected abstract String getFragenDatei();
-}
 
 
-    // Main-Methode zum Starten der Anwendung
-    public static void main(String[] args) {
-        // Load the external style configuration before starting the GUI
-        StyleManager.loadConfig("config.properties");
-        // Startet die GUI im Event-Dispatch-Thread
-        SwingUtilities.invokeLater(Hauptmenu::new);
-    }
-
-    private void aktualisiereFonts(JTextArea frageFeld, JButton[] buttons){
+    private void aktualisiereFonts(JTextArea frageFeld, JButton[] buttons) {
         int breite = getWidth();
         float faktor = breite / 500.0f; // 500 ist die ursprüngliche Fensterbreite
 
@@ -154,6 +149,17 @@ public abstract class Quiz extends JFrame {
         frageFeld.setFont(new Font("Arial", Font.BOLD, frageFontSize));
         for (JButton b : buttons) {
             b.setFont(new Font("Arial", Font.PLAIN, buttonFontSize));
+        }
+    }
+    // 👈 Wichtige schließende Klammer für die Klasse
+
+    // 🔁 Main-Methode außerhalb der Klasse definieren
+    public class Main {
+        public static void main(String[] args) {
+            // Load the external style configuration before starting the GUI
+            StyleManager.loadConfig("config.properties");
+            // Startet die GUI im Event-Dispatch-Thread
+            SwingUtilities.invokeLater(Hauptmenu::new);
         }
     }
 }
