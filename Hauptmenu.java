@@ -15,7 +15,7 @@ public class Hauptmenu extends JFrame {
     // Konstruktor für das Hauptmenü-Fenster
     public Hauptmenu() {
         setTitle("Quiz Hauptmenü");
-        setSize(800, 700);
+        setSize(800, 900);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
@@ -28,7 +28,7 @@ public class Hauptmenu extends JFrame {
         benutzerLabel = new JLabel("Angemeldet als: " + Benutzername.username);
         benutzerLabel.setHorizontalAlignment(SwingConstants.LEFT);
         benutzerLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 10));
-        add(benutzerLabel, BorderLayout.PAGE_START);
+        add(benutzerLabel, BorderLayout.SOUTH);
         benutzerLabel.setForeground(StyleManager.getColor("background.color", Color.BLACK));
         benutzerLabel.setBackground(StyleManager.getColor("accent.color", Color.BLACK));
 
@@ -68,6 +68,13 @@ public class Hauptmenu extends JFrame {
             new QuizEingabe();
             dispose();
         });
+
+        // Bild als JLabel laden
+        ImageIcon icon = new ImageIcon("Quizziness162.png");
+        Image skaliertesBild = icon.getImage().getScaledInstance(800,160, Image.SCALE_DEFAULT);
+        JLabel bildLabel = new JLabel(new ImageIcon(skaliertesBild));
+        bildLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        add(bildLabel, BorderLayout.BEFORE_FIRST_LINE);
 
         // Farben anwenden
         buttonPanel.setBackground(StyleManager.getColor("background.color", Color.WHITE));

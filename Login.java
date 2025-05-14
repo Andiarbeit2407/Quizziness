@@ -37,9 +37,9 @@ public class Login extends JFrame {
         panel.add(nameLabel);
         panel.add(nameField);
         panel.add(loginButton);
-        nameLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        nameField.setFont(new Font("Arial", Font.BOLD, 20));
-        loginButton.setFont(new Font("Arial", Font.BOLD, 20));
+        nameLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+        nameField.setFont(new Font("Arial", Font.PLAIN, 20));
+        loginButton.setFont(new Font("Arial", Font.PLAIN, 20));
 
         // Fügt das Panel dem Fenster hinzu
         add(panel);

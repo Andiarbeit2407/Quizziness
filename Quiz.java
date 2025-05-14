@@ -70,7 +70,7 @@ public abstract class Quiz extends JFrame {
         panel.add(hauptmenuButton, gbc);
 
 // Frage überspringen
-        JButton FrageUeberspringenButton = new JButton("Diese Frage überskippen");
+        JButton FrageUeberspringenButton = new JButton("Diese Frage überspringen");
         gbc.gridx = 0;
         gbc.gridy = 4;
         gbc.gridwidth = 2;
@@ -127,6 +127,7 @@ public abstract class Quiz extends JFrame {
             JOptionPane.showMessageDialog(this, istRichtig ? "Richtig!" : "Falsch!");
         }
 
+
         aktuelleFrageIndex++;
         if (aktuelleFrageIndex >= fragenListe.size()) {
             JOptionPane.showMessageDialog(this, "Quiz beendet.");
@@ -152,7 +153,7 @@ public abstract class Quiz extends JFrame {
         int frageFontSize = Math.round(15 * faktor);
         int buttonFontSize = Math.round(12 * faktor);
 
-        frageFeld.setFont(new Font("Arial", Font.BOLD, frageFontSize));
+        frageFeld.setFont(new Font("Arial", Font.PLAIN, frageFontSize));
         for (JButton b : buttons) {
             b.setFont(new Font("Arial", Font.PLAIN, buttonFontSize));
         }
