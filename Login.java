@@ -11,8 +11,8 @@ public class Login extends JFrame {
         // Setzt den Titel des Fensters
         setTitle("Login");
 
-        // Setzt die Fenstergröße auf 300x150 Pixel
-        setSize(300, 150);
+        // Setzt die Fenstergröße auf 600x300 Pixel
+        setSize(600, 100);
 
         // Zentriert das Fenster auf dem Bildschirm
         setLocationRelativeTo(null);
@@ -37,6 +37,9 @@ public class Login extends JFrame {
         panel.add(nameLabel);
         panel.add(nameField);
         panel.add(loginButton);
+        nameLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        nameField.setFont(new Font("Arial", Font.BOLD, 20));
+        loginButton.setFont(new Font("Arial", Font.BOLD, 20));
 
         // Fügt das Panel dem Fenster hinzu
         add(panel);

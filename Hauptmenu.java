@@ -6,96 +6,71 @@ import java.awt.event.*;
 // Definition der Klasse Hauptmenu, die ein Fenster (JFrame) darstellt
 public class Hauptmenu extends JFrame {
 
+    private JLabel titelLabel;
+    private JLabel benutzerLabel;
+    private JButton quizButton;
+    private JButton frageHinzufuegenButton;
+    private JPanel buttonPanel;
+
     // Konstruktor für das Hauptmenü-Fenster
     public Hauptmenu() {
-        // Setzen des Fenstertitels
         setTitle("Quiz Hauptmenü");
-
-        // Festlegen der Fenstergröße auf 400x300 Pixel
-        setSize(400, 300);
-
-        // Definieren, dass das Programm beendet wird, wenn das Fenster geschlossen wird
+        setSize(800, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        // Fenster wird zentriert auf dem Bildschirm angezeigt
         setLocationRelativeTo(null);
-
-        // BorderLayout wird als Layout-Manager verwendet
         setLayout(new BorderLayout());
 
-        // Erstellen eines Titel-Labels mit zentriertem Text und einer größeren, fetten Schriftart
-        JLabel titelLabel = new JLabel("Willkommen zum Quiz!", SwingConstants.CENTER);
+        // === GUI-Komponenten erstellen ===
+        titelLabel = new JLabel("Willkommen zum Quiz!", SwingConstants.CENTER);
         titelLabel.setFont(new Font("Arial", Font.BOLD, 20));
         add(titelLabel, BorderLayout.NORTH);
 
-        // Erstellen eines Labels, das den Benutzernamen anzeigt
-        JLabel benutzerLabel = new JLabel("Angemeldet als: " + Benutzername.username);
+        benutzerLabel = new JLabel("Angemeldet als: " + Benutzername.username);
         benutzerLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         benutzerLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 10));
         add(benutzerLabel, BorderLayout.PAGE_START);
 
-        // Erstellen der beiden Buttons für "Quiz starten" und "Frage hinzufügen"
-        JButton quizButton = new JButton("Quiz starten");
-        JButton frageHinzufuegenButton = new JButton("Frage hinzufügen");
+        quizButton = new JButton("Quiz starten");
+        frageHinzufuegenButton = new JButton("Frage hinzufügen");
 
-        // Erstellen eines Panels für die Buttons und Anordnung in einem Gitterlayout (2 Zeilen, 1 Spalte)
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(2, 1, 10, 10));
+        buttonPanel = new JPanel(new GridLayout(2, 1, 10, 10));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(30, 50, 30, 50));
         buttonPanel.add(quizButton);
         buttonPanel.add(frageHinzufuegenButton);
-
-        // Hinzufügen des Button-Panels in die Mitte des Fensters
         add(buttonPanel, BorderLayout.CENTER);
 
-        // Hinzufügen eines ActionListeners zum "Quiz starten"-Button
-        // Beim Klicken wird ein neues Quiz-Fenster geöffnet und das Hauptmenü geschlossen
-        quizButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String[] kategorien = {"Mathe", "Geschichte", "Technik"};
-                String auswahl = (String) JOptionPane.showInputDialog(
-                        Hauptmenu.this,
-                        "Wähle eine Quiz-Kategorie:",
-                        "Kategorie auswählen",
-                        JOptionPane.PLAIN_MESSAGE,
-                        null,
-                        kategorien,
-                        kategorien[0]);
+        // === Aktionen hinzufügen ===
+        quizButton.addActionListener(e -> {
+            String[] kategorien = {"Mathe", "Geschichte", "Technik"};
+            String auswahl = (String) JOptionPane.showInputDialog(
+                    Hauptmenu.this,
+                    "Wähle eine Quiz-Kategorie:",
+                    "Kategorie auswählen",
+                    JOptionPane.PLAIN_MESSAGE,
+                    null,
+                    kategorien,
+                    kategorien[0]);
 
-                if (auswahl != null) {
-                    dispose();
-                    switch (auswahl) {
-                        case "Mathe":
-                            new MatheQuiz();
-                            break;
-                        case "Geschichte":
-                            new GeschichteQuiz();
-                            break;
-                        case "Technik":
-                            new TechnikQuiz();
-                            break;
-                        default:
-                            JOptionPane.showMessageDialog(Hauptmenu.this, "Unbekannte Kategorie.");
-                    }
+            if (auswahl != null) {
+                dispose();
+                switch (auswahl) {
+                    case "Mathe" -> new MatheQuiz();
+                    case "Geschichte" -> new GeschichteQuiz();
+                    case "Technik" -> new TechnikQuiz();
+                    default -> JOptionPane.showMessageDialog(Hauptmenu.this, "Unbekannte Kategorie.");
                 }
             }
         });
 
-
-        // Hinzufügen eines ActionListeners zum "Frage hinzufügen"-Button
-        // Beim Klicken wird das Fenster zur Frageneingabe geöffnet und das Hauptmenü geschlossen
-        frageHinzufuegenButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                new QuizEingabe();
-                dispose();
-            }
+        frageHinzufuegenButton.addActionListener(e -> {
+            new QuizEingabe();
+            dispose();
         });
 
+        // Farben anwenden
         buttonPanel.setBackground(StyleManager.getColor("background.color", Color.WHITE));
         Color buttonAndTextBg = StyleManager.getColor("answer.color", Color.LIGHT_GRAY);
         Color textColor = StyleManager.getColor("font.color", Color.WHITE);
-
-        // Durchläuft alle Komponenten im Panel
         for (Component comp : buttonPanel.getComponents()) {
             if (comp instanceof JButton || comp instanceof JTextField) {
                 comp.setBackground(buttonAndTextBg);
@@ -103,15 +78,36 @@ public class Hauptmenu extends JFrame {
             }
         }
 
-        // Sichtbarmachen des Fensters nach dem Aufbau aller Komponenten
+        // === Dynamisches Resizing der Schriftgrößen ===
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                aktualisiereFonts();
+            }
+        });
+
         setVisible(true);
+        aktualisiereFonts(); // Initiale Anpassung
+    }
+
+    // Schriftgrößen aktualisieren basierend auf Fensterbreite
+    private void aktualisiereFonts() {
+        int breite = getWidth();
+        float faktor = breite / 500.0f;
+
+        int titelFontSize = Math.round(20 * faktor);
+        int labelFontSize = Math.round(12 * faktor);
+        int buttonFontSize = Math.round(15 * faktor);
+
+        titelLabel.setFont(new Font("Arial", Font.BOLD, titelFontSize));
+        benutzerLabel.setFont(new Font("Arial", Font.BOLD, labelFontSize));
+        quizButton.setFont(new Font("Arial", Font.BOLD, buttonFontSize));
+        frageHinzufuegenButton.setFont(new Font("Arial", Font.BOLD, buttonFontSize));
     }
 
     // Main-Methode zum Starten der Anwendung
     public static void main(String[] args) {
-        // Load the external style configuration before starting the GUI
         StyleManager.loadConfig("config.properties");
-        // Startet die GUI im Event-Dispatch-Thread
         SwingUtilities.invokeLater(Hauptmenu::new);
     }
 }

@@ -1,9 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
+import java.awt.event.*;
 import java.util.List;
 
 public abstract class Quiz extends JFrame {
@@ -21,13 +18,17 @@ public abstract class Quiz extends JFrame {
 
         setTitle("Quiz");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(400, 450);
+        setSize(800, 900);
         setLocationRelativeTo(null);
 
+        // Layout: 6 Zeilen, 2 Spalten
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 1.0;
 
+// Fragefeld
         JTextArea frageFeld = new JTextArea(fragenListe.get(aktuelleFrageIndex).frage, 4, 3);
         frageFeld.setLineWrap(true);
         frageFeld.setWrapStyleWord(true);
@@ -35,38 +36,46 @@ public abstract class Quiz extends JFrame {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
         panel.add(frageFeld, gbc);
 
+// Antwortbuttons
         JButton antwortA = new JButton(fragenListe.get(aktuelleFrageIndex).antworten[0]);
         JButton antwortB = new JButton(fragenListe.get(aktuelleFrageIndex).antworten[1]);
         JButton antwortC = new JButton(fragenListe.get(aktuelleFrageIndex).antworten[2]);
         JButton antwortD = new JButton(fragenListe.get(aktuelleFrageIndex).antworten[3]);
 
         gbc.gridwidth = 1;
+
         gbc.gridx = 0;
         gbc.gridy = 1;
         panel.add(antwortA, gbc);
+
         gbc.gridx = 1;
         gbc.gridy = 1;
         panel.add(antwortB, gbc);
+
         gbc.gridx = 0;
         gbc.gridy = 2;
         panel.add(antwortC, gbc);
+
         gbc.gridx = 1;
         gbc.gridy = 2;
         panel.add(antwortD, gbc);
 
+// Zurück zum Hauptmenü
         JButton hauptmenuButton = new JButton("Zurück zum Hauptmenü");
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 2;
-        gbc.fill = GridBagConstraints.NONE;
         panel.add(hauptmenuButton, gbc);
 
-        JButton FrageUeberspringenButton = new JButton("Diese Frage überspringen");
+// Frage überspringen
+        JButton FrageUeberspringenButton = new JButton("Diese Frage überskippen");
+        gbc.gridx = 0;
         gbc.gridy = 4;
+        gbc.gridwidth = 2;
         panel.add(FrageUeberspringenButton, gbc);
+
 
         // Listener
         hauptmenuButton.addActionListener(e -> {
@@ -91,7 +100,7 @@ public abstract class Quiz extends JFrame {
         Color buttonAndTextBg = StyleManager.getColor("answer.color", Color.LIGHT_GRAY);
         Color textColor = StyleManager.getColor("font.color", Color.WHITE);
         for (Component comp : panel.getComponents()) {
-            if (comp instanceof JButton || comp instanceof JTextField) {
+            if (comp instanceof JButton || comp instanceof JTextField || comp instanceof JTextArea) {
                 comp.setBackground(buttonAndTextBg);
                 comp.setForeground(textColor);
             }
@@ -105,7 +114,6 @@ public abstract class Quiz extends JFrame {
             }
         });
 
-        // Panel dem Fenster hinzufügen
         add(panel);
         setVisible(true);
     }
@@ -135,13 +143,11 @@ public abstract class Quiz extends JFrame {
         antwortD.setText(naechsteFrage.antworten[3]);
     }
 
-    // 🔁 Muss von Unterklassen überschrieben werden
     protected abstract String getFragenDatei();
-
 
     private void aktualisiereFonts(JTextArea frageFeld, JButton[] buttons) {
         int breite = getWidth();
-        float faktor = breite / 500.0f; // 500 ist die ursprüngliche Fensterbreite
+        float faktor = breite / 500.0f;
 
         int frageFontSize = Math.round(15 * faktor);
         int buttonFontSize = Math.round(12 * faktor);
@@ -151,14 +157,10 @@ public abstract class Quiz extends JFrame {
             b.setFont(new Font("Arial", Font.PLAIN, buttonFontSize));
         }
     }
-    // 👈 Wichtige schließende Klammer für die Klasse
 
-    // 🔁 Main-Methode außerhalb der Klasse definieren
     public class Main {
         public static void main(String[] args) {
-            // Load the external style configuration before starting the GUI
             StyleManager.loadConfig("config.properties");
-            // Startet die GUI im Event-Dispatch-Thread
             SwingUtilities.invokeLater(Hauptmenu::new);
         }
     }
