@@ -26,9 +26,11 @@ public class Hauptmenu extends JFrame {
         add(titelLabel, BorderLayout.NORTH);
 
         benutzerLabel = new JLabel("Angemeldet als: " + Benutzername.username);
-        benutzerLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        benutzerLabel.setHorizontalAlignment(SwingConstants.LEFT);
         benutzerLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 10));
         add(benutzerLabel, BorderLayout.PAGE_START);
+        benutzerLabel.setForeground(StyleManager.getColor("background.color", Color.BLACK));
+        benutzerLabel.setBackground(StyleManager.getColor("accent.color", Color.BLACK));
 
         quizButton = new JButton("Quiz starten");
         frageHinzufuegenButton = new JButton("Frage hinzufügen");

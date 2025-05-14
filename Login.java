@@ -24,7 +24,7 @@ public class Login extends JFrame {
         JLabel nameLabel = new JLabel("Dein Name:");
 
         // Setzt die Textfarbe für bessere Lesbarkeit bei dunklem Hintergrund
-        nameLabel.setForeground(StyleManager.getColor("font.color", Color.WHITE));
+        nameLabel.setForeground(StyleManager.getColor("accent.color", Color.BLACK));
 
         // Erstellt ein Textfeld für die Eingabe des Namens
         JTextField nameField = new JTextField(15);
@@ -43,7 +43,6 @@ public class Login extends JFrame {
 
         // Fügt das Panel dem Fenster hinzu
         add(panel);
-
         getRootPane().setDefaultButton(loginButton);
 
 
