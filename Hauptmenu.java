@@ -52,7 +52,7 @@ public class Hauptmenu extends JFrame {
         // Beim Klicken wird ein neues Quiz-Fenster geöffnet und das Hauptmenü geschlossen
         quizButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String[] kategorien = {"Mathe", "Geschichte", "Informatik"};
+                String[] kategorien = {"Mathe", "Geschichte", "Technik"};
                 String auswahl = (String) JOptionPane.showInputDialog(
                         Hauptmenu.this,
                         "Wähle eine Quiz-Kategorie:",
@@ -67,6 +67,12 @@ public class Hauptmenu extends JFrame {
                     switch (auswahl) {
                         case "Mathe":
                             new MatheQuiz();
+                            break;
+                        case "Geschichte":
+                            new GeschichteQuiz();
+                            break;
+                        case "Technik":
+                            new TechnikQuiz();
                             break;
                         default:
                             JOptionPane.showMessageDialog(Hauptmenu.this, "Unbekannte Kategorie.");
