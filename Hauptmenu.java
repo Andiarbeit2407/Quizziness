@@ -155,8 +155,8 @@ public class Hauptmenu extends JFrame {
         bildLabel.setHorizontalAlignment(SwingConstants.CENTER);
         add(bildLabel, BorderLayout.BEFORE_FIRST_LINE);
 
-        buttonPanel.setBackground(StyleManager.getColor("background.color", Color.WHITE));
-        Color buttonAndTextBg = StyleManager.getColor("answer.color", Color.LIGHT_GRAY);
+        buttonPanel.setBackground(StyleManager.getColor("primary.color", Color.WHITE));
+        Color buttonAndTextBg = StyleManager.getColor("secondary.color", Color.LIGHT_GRAY);
         Color textColor = StyleManager.getColor("fixedfont.color", Color.WHITE);
         for (Component comp : buttonPanel.getComponents()) {
             if (comp instanceof JButton || comp instanceof JTextField) {
