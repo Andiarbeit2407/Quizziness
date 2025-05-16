@@ -1,37 +1,77 @@
-// Importieren der benötigten Klassen für GUI-Elemente, Layouts und Event-Handling
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-// Definition der Klasse Hauptmenu, die ein Fenster (JFrame) darstellt
+// Runde Button-Klasse
+class RoundedButton extends JButton {
+
+    private int radius;
+
+    public RoundedButton(String text, int radius) {
+        super(text);
+        this.radius = radius;
+        setContentAreaFilled(false);
+        setFocusPainted(false);
+        setBorderPainted(false);
+        setOpaque(false);
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        g2.setColor(getBackground());
+        g2.fillRoundRect(0, 0, getWidth(), getHeight(), radius, radius);
+
+        super.paintComponent(g2);
+        g2.dispose();
+    }
+
+    @Override
+    public void paintBorder(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setColor(getForeground());
+        g2.drawRoundRect(0, 0, getWidth()-1, getHeight()-1, radius, radius);
+        g2.dispose();
+    }
+
+    @Override
+    public boolean contains(int x, int y) {
+        Shape shape = new java.awt.geom.RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), radius, radius);
+        return shape.contains(x, y);
+    }
+}
+
+// Hauptmenu-Klasse
 public class Hauptmenu extends JFrame {
 
     private JLabel titelLabel;
     private JLabel benutzerLabel;
-    private JButton quizButton;
-    private JButton frageHinzufuegenButton;
+    private RoundedButton quizButton;
+    private RoundedButton frageHinzufuegenButton;
     private JPanel buttonPanel;
 
-    // Konstruktor für das Hauptmenü-Fenster
     public Hauptmenu() {
+        StyleManager.loadConfig("config.properties");
         setTitle("Quiz Hauptmenü");
-        setSize(800, 700);
+        setSize(800, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        // === GUI-Komponenten erstellen ===
         titelLabel = new JLabel("Willkommen zum Quiz!", SwingConstants.CENTER);
         titelLabel.setFont(new Font("Arial", Font.BOLD, 20));
         add(titelLabel, BorderLayout.NORTH);
 
         benutzerLabel = new JLabel("Angemeldet als: " + Benutzername.username);
-        benutzerLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        benutzerLabel.setHorizontalAlignment(SwingConstants.LEFT);
         benutzerLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 10));
-        add(benutzerLabel, BorderLayout.PAGE_START);
+        add(benutzerLabel, BorderLayout.SOUTH);
 
-        quizButton = new JButton("Quiz starten");
-        frageHinzufuegenButton = new JButton("Frage hinzufügen");
+        quizButton = new RoundedButton("Quiz starten", 30);
+        frageHinzufuegenButton = new RoundedButton("Frage hinzufügen", 30);
 
         buttonPanel = new JPanel(new GridLayout(2, 1, 10, 10));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(30, 50, 30, 50));
@@ -39,7 +79,6 @@ public class Hauptmenu extends JFrame {
         buttonPanel.add(frageHinzufuegenButton);
         add(buttonPanel, BorderLayout.CENTER);
 
-        // === Aktionen hinzufügen ===
         quizButton.addActionListener(e -> {
             String[] kategorien = {"Mathe", "Geschichte", "Technik"};
             String auswahl = (String) JOptionPane.showInputDialog(
@@ -67,10 +106,59 @@ public class Hauptmenu extends JFrame {
             dispose();
         });
 
-        // Farben anwenden
+        JMenuBar menuBar = new JMenuBar();
+        JMenu einstellungenMenu = new JMenu("Einstellungen");
+
+        JMenuItem farbschemaItem = new JMenuItem("Farbschema ändern...");
+        farbschemaItem.addActionListener(e -> {
+            Color neuePrimary = JColorChooser.showDialog(this, "Wähle Primary-Farbe", StyleManager.getColor("primary.color", Color.BLUE));
+            if (neuePrimary != null) {
+                String hexPrimary = String.format("#%02x%02x%02x", neuePrimary.getRed(), neuePrimary.getGreen(), neuePrimary.getBlue());
+                StyleManager.setColor("primary.color", hexPrimary);
+            }
+
+            Color neueSecondary = JColorChooser.showDialog(this, "Wähle Secondary-Farbe", StyleManager.getColor("secondary.color", Color.MAGENTA));
+            if (neueSecondary != null) {
+                String hexSecondary = String.format("#%02x%02x%02x", neueSecondary.getRed(), neueSecondary.getGreen(), neueSecondary.getBlue());
+                StyleManager.setColor("secondary.color", hexSecondary);
+            }
+
+            aktualisiereFarben();
+        });
+
+        JMenuItem textfarbeItem = new JMenuItem("Textfarbe wählen...");
+        textfarbeItem.addActionListener(e -> {
+            Object[] optionen = {"Weiß (#FFFFFF)", "Schwarz (#000000)"};
+            String auswahl = (String) JOptionPane.showInputDialog(
+                    this,
+                    "Wähle eine Textfarbe:",
+                    "Textfarbe",
+                    JOptionPane.PLAIN_MESSAGE,
+                    null,
+                    optionen,
+                    optionen[0]
+            );
+            if (auswahl != null) {
+                String hex = auswahl.contains("Weiß") ? "#FFFFFF" : "#000000";
+                StyleManager.setColor("fixedfont.color", hex);
+                aktualisiereTextfarben();
+            }
+        });
+
+        einstellungenMenu.add(farbschemaItem);
+        einstellungenMenu.add(textfarbeItem);
+        menuBar.add(einstellungenMenu);
+        setJMenuBar(menuBar);
+
+        ImageIcon icon = new ImageIcon("Quizziness162.png");
+        Image skaliertesBild = icon.getImage().getScaledInstance(800, 160, Image.SCALE_DEFAULT);
+        JLabel bildLabel = new JLabel(new ImageIcon(skaliertesBild));
+        bildLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        add(bildLabel, BorderLayout.BEFORE_FIRST_LINE);
+
         buttonPanel.setBackground(StyleManager.getColor("background.color", Color.WHITE));
         Color buttonAndTextBg = StyleManager.getColor("answer.color", Color.LIGHT_GRAY);
-        Color textColor = StyleManager.getColor("font.color", Color.WHITE);
+        Color textColor = StyleManager.getColor("fixedfont.color", Color.WHITE);
         for (Component comp : buttonPanel.getComponents()) {
             if (comp instanceof JButton || comp instanceof JTextField) {
                 comp.setBackground(buttonAndTextBg);
@@ -78,7 +166,8 @@ public class Hauptmenu extends JFrame {
             }
         }
 
-        // === Dynamisches Resizing der Schriftgrößen ===
+        aktualisiereTextfarben();
+
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -86,11 +175,11 @@ public class Hauptmenu extends JFrame {
             }
         });
 
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
-        aktualisiereFonts(); // Initiale Anpassung
+        aktualisiereFonts();
     }
 
-    // Schriftgrößen aktualisieren basierend auf Fensterbreite
     private void aktualisiereFonts() {
         int breite = getWidth();
         float faktor = breite / 500.0f;
@@ -105,7 +194,28 @@ public class Hauptmenu extends JFrame {
         frageHinzufuegenButton.setFont(new Font("Arial", Font.BOLD, buttonFontSize));
     }
 
-    // Main-Methode zum Starten der Anwendung
+    private void aktualisiereFarben() {
+        Color primary = StyleManager.getColor("primary.color", Color.BLUE);
+        Color secondary = StyleManager.getColor("secondary.color", Color.MAGENTA);
+        Color text = StyleManager.getColor("fixedfont.color", Color.WHITE);
+
+        buttonPanel.setBackground(primary);
+        for (Component comp : buttonPanel.getComponents()) {
+            if (comp instanceof JButton) {
+                comp.setBackground(secondary);
+                comp.setForeground(text);
+            }
+        }
+    }
+
+    private void aktualisiereTextfarben() {
+        Color textColor = StyleManager.getColor("fixedfont.color", Color.WHITE);
+        titelLabel.setForeground(textColor);
+        benutzerLabel.setForeground(textColor);
+        quizButton.setForeground(textColor);
+        frageHinzufuegenButton.setForeground(textColor);
+    }
+
     public static void main(String[] args) {
         StyleManager.loadConfig("config.properties");
         SwingUtilities.invokeLater(Hauptmenu::new);

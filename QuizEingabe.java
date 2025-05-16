@@ -68,6 +68,7 @@ public class QuizEingabe extends JFrame {
 		}
 
 		add(panel);
+		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setVisible(true);
 	}
 

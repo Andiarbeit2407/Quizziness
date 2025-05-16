@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.awt.Font;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -29,6 +30,16 @@ public class StyleManager {
         }
         return fallback;
     }
+    public static void setColor(String key, String hex) {
+        props.setProperty(key, hex);
+        try (FileOutputStream out = new FileOutputStream("config.properties")) {
+            props.store(out, null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
     // Returns a font using name and size keys, or fallback if missing/invalid
     public static Font getFont(String nameKey, String sizeKey, Font fallback) {

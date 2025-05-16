@@ -24,13 +24,15 @@ public class Login extends JFrame {
         JLabel nameLabel = new JLabel("Dein Name:");
 
         // Setzt die Textfarbe für bessere Lesbarkeit bei dunklem Hintergrund
-        nameLabel.setForeground(StyleManager.getColor("font.color", Color.WHITE));
+        nameLabel.setForeground(StyleManager.getColor("fixedfont.color", Color.WHITE));
 
         // Erstellt ein Textfeld für die Eingabe des Namens
         JTextField nameField = new JTextField(15);
 
         // Erstellt einen Button zum Bestätigen des Logins
         JButton loginButton = new JButton("Los geht's!");
+
+
 
         // Erstellt ein Panel und fügt das Label, Textfeld und den Button hinzu
         JPanel panel = new JPanel();
@@ -43,7 +45,6 @@ public class Login extends JFrame {
 
         // Fügt das Panel dem Fenster hinzu
         add(panel);
-
         getRootPane().setDefaultButton(loginButton);
 
 
@@ -67,9 +68,9 @@ public class Login extends JFrame {
             }
         });
 
-        panel.setBackground(StyleManager.getColor("background.color", Color.WHITE));
-        Color buttonAndTextBg = StyleManager.getColor("answer.color", Color.LIGHT_GRAY);
-        Color textColor = StyleManager.getColor("font.color", Color.WHITE);
+        panel.setBackground(StyleManager.getColor("primary.color", Color.WHITE));
+        Color buttonAndTextBg = StyleManager.getColor("secondary.color", Color.LIGHT_GRAY);
+        Color textColor = StyleManager.getColor("fixedfont.color", Color.WHITE);
 
         // Durchläuft alle Komponenten im Panel
         for (Component comp : panel.getComponents()) {
@@ -79,6 +80,7 @@ public class Login extends JFrame {
             }
         }
 
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         // Macht das Fenster sichtbar
         setVisible(true);
     }

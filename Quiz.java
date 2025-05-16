@@ -18,17 +18,15 @@ public abstract class Quiz extends JFrame {
 
         setTitle("Quiz");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 900);
+        setSize(800, 800);
         setLocationRelativeTo(null);
 
-        // Layout: 6 Zeilen, 2 Spalten
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
 
-// Fragefeld
         JTextArea frageFeld = new JTextArea(fragenListe.get(aktuelleFrageIndex).frage, 4, 3);
         frageFeld.setLineWrap(true);
         frageFeld.setWrapStyleWord(true);
@@ -38,11 +36,11 @@ public abstract class Quiz extends JFrame {
         gbc.gridwidth = 2;
         panel.add(frageFeld, gbc);
 
-// Antwortbuttons
-        JButton antwortA = new JButton(fragenListe.get(aktuelleFrageIndex).antworten[0]);
-        JButton antwortB = new JButton(fragenListe.get(aktuelleFrageIndex).antworten[1]);
-        JButton antwortC = new JButton(fragenListe.get(aktuelleFrageIndex).antworten[2]);
-        JButton antwortD = new JButton(fragenListe.get(aktuelleFrageIndex).antworten[3]);
+        // Runde Buttons
+        RunderButton antwortA = new RunderButton(fragenListe.get(aktuelleFrageIndex).antworten[0]);
+        RunderButton antwortB = new RunderButton(fragenListe.get(aktuelleFrageIndex).antworten[1]);
+        RunderButton antwortC = new RunderButton(fragenListe.get(aktuelleFrageIndex).antworten[2]);
+        RunderButton antwortD = new RunderButton(fragenListe.get(aktuelleFrageIndex).antworten[3]);
 
         gbc.gridwidth = 1;
 
@@ -62,22 +60,18 @@ public abstract class Quiz extends JFrame {
         gbc.gridy = 2;
         panel.add(antwortD, gbc);
 
-// Zurück zum Hauptmenü
-        JButton hauptmenuButton = new JButton("Zurück zum Hauptmenü");
+        RunderButton hauptmenuButton = new RunderButton("Zurück zum Hauptmenü");
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 2;
         panel.add(hauptmenuButton, gbc);
 
-// Frage überspringen
-        JButton FrageUeberspringenButton = new JButton("Diese Frage überskippen");
+        RunderButton FrageUeberspringenButton = new RunderButton("Diese Frage überspringen");
         gbc.gridx = 0;
         gbc.gridy = 4;
         gbc.gridwidth = 2;
         panel.add(FrageUeberspringenButton, gbc);
 
-
-        // Listener
         hauptmenuButton.addActionListener(e -> {
             dispose();
             new Hauptmenu();
@@ -85,7 +79,6 @@ public abstract class Quiz extends JFrame {
 
         FrageUeberspringenButton.addActionListener(e ->
                 verarbeiteAntwort(5, frageFeld, antwortA, antwortB, antwortC, antwortD));
-
         antwortA.addActionListener(e ->
                 verarbeiteAntwort(0, frageFeld, antwortA, antwortB, antwortC, antwortD));
         antwortB.addActionListener(e ->
@@ -95,10 +88,10 @@ public abstract class Quiz extends JFrame {
         antwortD.addActionListener(e ->
                 verarbeiteAntwort(3, frageFeld, antwortA, antwortB, antwortC, antwortD));
 
-        // Styling
-        panel.setBackground(StyleManager.getColor("background.color", Color.WHITE));
-        Color buttonAndTextBg = StyleManager.getColor("answer.color", Color.LIGHT_GRAY);
-        Color textColor = StyleManager.getColor("font.color", Color.WHITE);
+        panel.setBackground(StyleManager.getColor("primary.color", Color.WHITE));
+        Color buttonAndTextBg = StyleManager.getColor("secondary.color", Color.LIGHT_GRAY);
+        Color textColor = StyleManager.getColor("fixedfont.color", Color.WHITE);
+
         for (Component comp : panel.getComponents()) {
             if (comp instanceof JButton || comp instanceof JTextField || comp instanceof JTextArea) {
                 comp.setBackground(buttonAndTextBg);
@@ -106,7 +99,6 @@ public abstract class Quiz extends JFrame {
             }
         }
 
-        // Dynamische Schriftanpassung bei Größenänderung
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -115,6 +107,7 @@ public abstract class Quiz extends JFrame {
         });
 
         add(panel);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
     }
 
@@ -124,23 +117,72 @@ public abstract class Quiz extends JFrame {
         if (ausgewaehlteAntwort != 5) {
             QuizDaten aktuelleFrage = fragenListe.get(aktuelleFrageIndex);
             boolean istRichtig = aktuelleFrage.loesung[ausgewaehlteAntwort];
-            JOptionPane.showMessageDialog(this, istRichtig ? "Richtig!" : "Falsch!");
-        }
 
-        aktuelleFrageIndex++;
-        if (aktuelleFrageIndex >= fragenListe.size()) {
-            JOptionPane.showMessageDialog(this, "Quiz beendet.");
-            dispose();
-            new Hauptmenu();
-            return;
-        }
+            // Rücksetzen der Farben
+            antwortA.setBorder(null);
+            antwortB.setBorder(null);
+            antwortC.setBorder(null);
+            antwortD.setBorder(null);
 
-        QuizDaten naechsteFrage = fragenListe.get(aktuelleFrageIndex);
-        frageFeld.setText(naechsteFrage.frage);
-        antwortA.setText(naechsteFrage.antworten[0]);
-        antwortB.setText(naechsteFrage.antworten[1]);
-        antwortC.setText(naechsteFrage.antworten[2]);
-        antwortD.setText(naechsteFrage.antworten[3]);
+            // Falsche Antwort rot umrahmen
+            if (!istRichtig) {
+                ((JComponent) new JButton[]{antwortA, antwortB, antwortC, antwortD}[ausgewaehlteAntwort])
+                        .setBorder(BorderFactory.createLineBorder(Color.RED, 4));
+            }
+
+            // Richtige Antwort grün umrahmen
+            for (int i = 0; i < 4; i++) {
+                if (aktuelleFrage.loesung[i]) {
+                    ((JComponent) new JButton[]{antwortA, antwortB, antwortC, antwortD}[i])
+                            .setBorder(BorderFactory.createLineBorder(Color.GREEN, 4));
+                }
+            }
+
+            // Warten, damit Nutzer Feedback sieht
+            Timer timer = new Timer(1500, e -> {
+                aktuelleFrageIndex++;
+                if (aktuelleFrageIndex >= fragenListe.size()) {
+                    JOptionPane.showMessageDialog(this, "Quiz beendet.");
+                    dispose();
+                    new Hauptmenu();
+                    return;
+                }
+
+                QuizDaten naechsteFrage = fragenListe.get(aktuelleFrageIndex);
+                frageFeld.setText(naechsteFrage.frage);
+                antwortA.setText(naechsteFrage.antworten[0]);
+                antwortB.setText(naechsteFrage.antworten[1]);
+                antwortC.setText(naechsteFrage.antworten[2]);
+                antwortD.setText(naechsteFrage.antworten[3]);
+
+                antwortA.setBorder(null);
+                antwortB.setBorder(null);
+                antwortC.setBorder(null);
+                antwortD.setBorder(null);
+            });
+            timer.setRepeats(false);
+            timer.start();
+        } else {
+            aktuelleFrageIndex++;
+            if (aktuelleFrageIndex >= fragenListe.size()) {
+                JOptionPane.showMessageDialog(this, "Quiz beendet.");
+                dispose();
+                new Hauptmenu();
+                return;
+            }
+
+            QuizDaten naechsteFrage = fragenListe.get(aktuelleFrageIndex);
+            frageFeld.setText(naechsteFrage.frage);
+            antwortA.setText(naechsteFrage.antworten[0]);
+            antwortB.setText(naechsteFrage.antworten[1]);
+            antwortC.setText(naechsteFrage.antworten[2]);
+            antwortD.setText(naechsteFrage.antworten[3]);
+
+            antwortA.setBorder(null);
+            antwortB.setBorder(null);
+            antwortC.setBorder(null);
+            antwortD.setBorder(null);
+        }
     }
 
     protected abstract String getFragenDatei();
@@ -154,14 +196,15 @@ public abstract class Quiz extends JFrame {
 
         frageFeld.setFont(new Font("Arial", Font.BOLD, frageFontSize));
         for (JButton b : buttons) {
-            b.setFont(new Font("Arial", Font.PLAIN, buttonFontSize));
+            b.setFont(new Font("Arial", Font.BOLD, buttonFontSize));
         }
     }
 
-    public class Main {
+    public static class Main {
         public static void main(String[] args) {
             StyleManager.loadConfig("config.properties");
             SwingUtilities.invokeLater(Hauptmenu::new);
         }
     }
 }
+
