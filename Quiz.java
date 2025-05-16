@@ -36,11 +36,11 @@ public abstract class Quiz extends JFrame {
         gbc.gridwidth = 2;
         panel.add(frageFeld, gbc);
 
-        // Runde Buttons
-        RunderButton antwortA = new RunderButton(fragenListe.get(aktuelleFrageIndex).antworten[0]);
-        RunderButton antwortB = new RunderButton(fragenListe.get(aktuelleFrageIndex).antworten[1]);
-        RunderButton antwortC = new RunderButton(fragenListe.get(aktuelleFrageIndex).antworten[2]);
-        RunderButton antwortD = new RunderButton(fragenListe.get(aktuelleFrageIndex).antworten[3]);
+        // Buttons (ohne Rundungen)
+        JButton antwortA = new JButton(fragenListe.get(aktuelleFrageIndex).antworten[0]);
+        JButton antwortB = new JButton(fragenListe.get(aktuelleFrageIndex).antworten[1]);
+        JButton antwortC = new JButton(fragenListe.get(aktuelleFrageIndex).antworten[2]);
+        JButton antwortD = new JButton(fragenListe.get(aktuelleFrageIndex).antworten[3]);
 
         gbc.gridwidth = 1;
 
@@ -60,13 +60,13 @@ public abstract class Quiz extends JFrame {
         gbc.gridy = 2;
         panel.add(antwortD, gbc);
 
-        RunderButton hauptmenuButton = new RunderButton("Zurück zum Hauptmenü");
+        JButton hauptmenuButton = new JButton("Zurück zum Hauptmenü");
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 2;
         panel.add(hauptmenuButton, gbc);
 
-        RunderButton FrageUeberspringenButton = new RunderButton("Diese Frage überspringen");
+        JButton FrageUeberspringenButton = new JButton("Diese Frage überspringen");
         gbc.gridx = 0;
         gbc.gridy = 4;
         gbc.gridwidth = 2;
@@ -118,23 +118,27 @@ public abstract class Quiz extends JFrame {
             QuizDaten aktuelleFrage = fragenListe.get(aktuelleFrageIndex);
             boolean istRichtig = aktuelleFrage.loesung[ausgewaehlteAntwort];
 
-            // Rücksetzen der Farben
-            antwortA.setBorder(null);
-            antwortB.setBorder(null);
-            antwortC.setBorder(null);
-            antwortD.setBorder(null);
-
-            // Falsche Antwort rot umrahmen
-            if (!istRichtig) {
-                ((JComponent) new JButton[]{antwortA, antwortB, antwortC, antwortD}[ausgewaehlteAntwort])
-                        .setBorder(BorderFactory.createLineBorder(Color.RED, 4));
+            // Rücksetzen der Farben und Borders auf Standard
+            JButton[] buttons = new JButton[]{antwortA, antwortB, antwortC, antwortD};
+            Color defaultBg = StyleManager.getColor("secondary.color", Color.LIGHT_GRAY);
+            Color defaultFg = StyleManager.getColor("fixedfont.color", Color.WHITE);
+            for (JButton btn : buttons) {
+                btn.setBackground(defaultBg);
+                btn.setForeground(defaultFg);
+                btn.setBorder(null);
             }
 
-            // Richtige Antwort grün umrahmen
+            // Falsche Antwort rot hinterlegen und Text weiß
+            if (!istRichtig) {
+                buttons[ausgewaehlteAntwort].setBackground(Color.RED);
+                buttons[ausgewaehlteAntwort].setForeground(Color.WHITE);
+            }
+
+            // Richtige Antwort grün hinterlegen und Text weiß
             for (int i = 0; i < 4; i++) {
                 if (aktuelleFrage.loesung[i]) {
-                    ((JComponent) new JButton[]{antwortA, antwortB, antwortC, antwortD}[i])
-                            .setBorder(BorderFactory.createLineBorder(Color.GREEN, 4));
+                    buttons[i].setBackground(Color.GREEN);
+                    buttons[i].setForeground(Color.WHITE);
                 }
             }
 
@@ -155,14 +159,17 @@ public abstract class Quiz extends JFrame {
                 antwortC.setText(naechsteFrage.antworten[2]);
                 antwortD.setText(naechsteFrage.antworten[3]);
 
-                antwortA.setBorder(null);
-                antwortB.setBorder(null);
-                antwortC.setBorder(null);
-                antwortD.setBorder(null);
+                // Buttons wieder zurücksetzen
+                for (JButton btn : buttons) {
+                    btn.setBackground(defaultBg);
+                    btn.setForeground(defaultFg);
+                    btn.setBorder(null);
+                }
             });
             timer.setRepeats(false);
             timer.start();
         } else {
+            // Wenn Frage übersprungen wurde
             aktuelleFrageIndex++;
             if (aktuelleFrageIndex >= fragenListe.size()) {
                 JOptionPane.showMessageDialog(this, "Quiz beendet.");
@@ -178,10 +185,15 @@ public abstract class Quiz extends JFrame {
             antwortC.setText(naechsteFrage.antworten[2]);
             antwortD.setText(naechsteFrage.antworten[3]);
 
-            antwortA.setBorder(null);
-            antwortB.setBorder(null);
-            antwortC.setBorder(null);
-            antwortD.setBorder(null);
+            // Buttons wieder zurücksetzen
+            JButton[] buttons = new JButton[]{antwortA, antwortB, antwortC, antwortD};
+            Color defaultBg = StyleManager.getColor("secondary.color", Color.LIGHT_GRAY);
+            Color defaultFg = StyleManager.getColor("fixedfont.color", Color.WHITE);
+            for (JButton btn : buttons) {
+                btn.setBackground(defaultBg);
+                btn.setForeground(defaultFg);
+                btn.setBorder(null);
+            }
         }
     }
 
@@ -207,4 +219,3 @@ public abstract class Quiz extends JFrame {
         }
     }
 }
-

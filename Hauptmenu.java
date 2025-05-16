@@ -54,7 +54,6 @@ public class Hauptmenu extends JFrame {
     private JPanel buttonPanel;
 
     public Hauptmenu() {
-        StyleManager.loadConfig("config.properties");
         setTitle("Quiz Hauptmenü");
         setSize(800, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
