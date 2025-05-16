@@ -85,7 +85,6 @@ public abstract class Quiz extends JFrame {
 
         FrageUeberspringenButton.addActionListener(e ->
                 verarbeiteAntwort(5, frageFeld, antwortA, antwortB, antwortC, antwortD));
-
         antwortA.addActionListener(e ->
                 verarbeiteAntwort(0, frageFeld, antwortA, antwortB, antwortC, antwortD));
         antwortB.addActionListener(e ->
