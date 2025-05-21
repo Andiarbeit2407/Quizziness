@@ -31,8 +31,11 @@ public class QuizLader {
 					}
 				}
 
+				//TODO add a time option in seconds in the Quiz constructor
+				int time = 20;
+
 				br.readLine(); // Leere Zeile zwischen Fragen überspringen
-				fragenListe.add(new QuizDaten(frage, antworten, loesungen));
+				fragenListe.add(new QuizDaten(frage, antworten, loesungen, time));
 
 			}
 		} catch (IOException e) {

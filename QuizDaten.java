@@ -9,10 +9,13 @@ public class QuizDaten {
 
 	public boolean[] loesung;
 
+	public int time;
+
 	// Konstruktor zum Erstellen eines QuizDaten-Objekts mit Frage und Antworten
-	public QuizDaten(String frage, String[] antworten, boolean[] loesung) {
+	public QuizDaten(String frage, String[] antworten, boolean[] loesung,int time) {
 		this.frage = frage;
 		this.antworten = antworten;
 		this.loesung = loesung;
+		this.time = time;
 	}
 }

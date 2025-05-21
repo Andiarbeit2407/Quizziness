@@ -8,6 +8,10 @@ public abstract class Quiz extends JFrame {
     protected List<QuizDaten> fragenListe;
     protected int aktuelleFrageIndex = 0;
 
+    // Aktueller Index der Frage, die angezeigt wird
+    private int aktuelleFrageIndex = 0;
+
+    // Konstruktor für das Quiz-Fenster
     public Quiz() {
         fragenListe = QuizLader.ladeAlleFragen(getFragenDatei());
 
@@ -27,6 +31,7 @@ public abstract class Quiz extends JFrame {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
 
+        // Textfeld zur Anzeige der aktuellen Frage
         JTextArea frageFeld = new JTextArea(fragenListe.get(aktuelleFrageIndex).frage, 4, 3);
         frageFeld.setLineWrap(true);
         frageFeld.setWrapStyleWord(true);
@@ -35,6 +40,8 @@ public abstract class Quiz extends JFrame {
         gbc.gridy = 0;
         gbc.gridwidth = 2;
         panel.add(frageFeld, gbc);
+
+
 
         // Buttons (ohne Rundungen)
         JButton antwortA = new JButton(fragenListe.get(aktuelleFrageIndex).antworten[0]);
@@ -72,21 +79,41 @@ public abstract class Quiz extends JFrame {
         gbc.gridwidth = 2;
         panel.add(FrageUeberspringenButton, gbc);
 
-        hauptmenuButton.addActionListener(e -> {
-            dispose();
-            new Hauptmenu();
+        //Actionlistener für Überspringen Button
+        FrageUeberspringenButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                verarbeiteAntwort(5, frageFeld,  antwortA,  antwortB,  antwortC,  antwortD);
+            }
         });
-
-        FrageUeberspringenButton.addActionListener(e ->
-                verarbeiteAntwort(5, frageFeld, antwortA, antwortB, antwortC, antwortD));
-        antwortA.addActionListener(e ->
-                verarbeiteAntwort(0, frageFeld, antwortA, antwortB, antwortC, antwortD));
-        antwortB.addActionListener(e ->
-                verarbeiteAntwort(1, frageFeld, antwortA, antwortB, antwortC, antwortD));
-        antwortC.addActionListener(e ->
-                verarbeiteAntwort(2, frageFeld, antwortA, antwortB, antwortC, antwortD));
-        antwortD.addActionListener(e ->
-                verarbeiteAntwort(3, frageFeld, antwortA, antwortB, antwortC, antwortD));
+//Actionlistener für Button Anwtort A
+        antwortA.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                verarbeiteAntwort(0, frageFeld,  antwortA,  antwortB,  antwortC,  antwortD);
+            }
+        });
+//Actionlistener für Button Anwtort B
+        antwortB.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                verarbeiteAntwort(1, frageFeld,  antwortA,  antwortB,  antwortC,  antwortD);
+            }
+        });
+//Actionlistener für Button Anwtort C
+        antwortC.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                verarbeiteAntwort(2, frageFeld,  antwortA,  antwortB,  antwortC,  antwortD);
+            }
+        });
+//Actionlistener für Button Anwtort D
+        antwortD.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                verarbeiteAntwort(3, frageFeld,  antwortA,  antwortB,  antwortC,  antwortD);
+            }
+        });
 
         panel.setBackground(StyleManager.getColor("primary.color", Color.WHITE));
         Color buttonAndTextBg = StyleManager.getColor("secondary.color", Color.LIGHT_GRAY);
@@ -109,11 +136,19 @@ public abstract class Quiz extends JFrame {
         add(panel);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
+
+        timeRemaining = fragenListe.get(aktuelleFrageIndex).time;
+        timer.start();
     }
+    
+    
 
     private void verarbeiteAntwort(int ausgewaehlteAntwort, JTextArea frageFeld,
                                    JButton antwortA, JButton antwortB,
                                    JButton antwortC, JButton antwortD) {
+
+
+
         if (ausgewaehlteAntwort != 5) {
             QuizDaten aktuelleFrage = fragenListe.get(aktuelleFrageIndex);
             boolean istRichtig = aktuelleFrage.loesung[ausgewaehlteAntwort];
@@ -128,74 +163,30 @@ public abstract class Quiz extends JFrame {
                 btn.setBorder(null);
             }
 
-            // Falsche Antwort rot hinterlegen und Text weiß
-            if (!istRichtig) {
-                buttons[ausgewaehlteAntwort].setBackground(Color.RED);
-                buttons[ausgewaehlteAntwort].setForeground(Color.WHITE);
-            }
-
-            // Richtige Antwort grün hinterlegen und Text weiß
-            for (int i = 0; i < 4; i++) {
-                if (aktuelleFrage.loesung[i]) {
-                    buttons[i].setBackground(Color.GREEN);
-                    buttons[i].setForeground(Color.WHITE);
-                }
-            }
-
-            // Warten, damit Nutzer Feedback sieht
-            Timer timer = new Timer(1500, e -> {
-                aktuelleFrageIndex++;
-                if (aktuelleFrageIndex >= fragenListe.size()) {
-                    JOptionPane.showMessageDialog(this, "Quiz beendet.");
-                    dispose();
-                    new Hauptmenu();
-                    return;
-                }
-
-                QuizDaten naechsteFrage = fragenListe.get(aktuelleFrageIndex);
-                frageFeld.setText(naechsteFrage.frage);
-                antwortA.setText(naechsteFrage.antworten[0]);
-                antwortB.setText(naechsteFrage.antworten[1]);
-                antwortC.setText(naechsteFrage.antworten[2]);
-                antwortD.setText(naechsteFrage.antworten[3]);
-
-                // Buttons wieder zurücksetzen
-                for (JButton btn : buttons) {
-                    btn.setBackground(defaultBg);
-                    btn.setForeground(defaultFg);
-                    btn.setBorder(null);
-                }
-            });
-            timer.setRepeats(false);
-            timer.start();
-        } else {
-            // Wenn Frage übersprungen wurde
-            aktuelleFrageIndex++;
-            if (aktuelleFrageIndex >= fragenListe.size()) {
-                JOptionPane.showMessageDialog(this, "Quiz beendet.");
-                dispose();
-                new Hauptmenu();
-                return;
-            }
-
-            QuizDaten naechsteFrage = fragenListe.get(aktuelleFrageIndex);
-            frageFeld.setText(naechsteFrage.frage);
-            antwortA.setText(naechsteFrage.antworten[0]);
-            antwortB.setText(naechsteFrage.antworten[1]);
-            antwortC.setText(naechsteFrage.antworten[2]);
-            antwortD.setText(naechsteFrage.antworten[3]);
-
-            // Buttons wieder zurücksetzen
-            JButton[] buttons = new JButton[]{antwortA, antwortB, antwortC, antwortD};
-            Color defaultBg = StyleManager.getColor("secondary.color", Color.LIGHT_GRAY);
-            Color defaultFg = StyleManager.getColor("fixedfont.color", Color.WHITE);
-            for (JButton btn : buttons) {
-                btn.setBackground(defaultBg);
-                btn.setForeground(defaultFg);
-                btn.setBorder(null);
+            // Rückmeldung geben
+            if (istRichtig) {
+                JOptionPane.showMessageDialog(this, "Richtig!");
+            } else {
+                JOptionPane.showMessageDialog(this, "Falsch!");
             }
         }
+        // Nächste Frage anzeigen
+        aktuelleFrageIndex++;
+        if (aktuelleFrageIndex >= fragenListe.size()) {
+            JOptionPane.showMessageDialog(this, "Quiz beendet.");
+            dispose();
+            new Hauptmenu();
+            return;
+        }
+
+        QuizDaten naechsteFrage = fragenListe.get(aktuelleFrageIndex);
+        frageFeld.setText(naechsteFrage.frage);
+        antwortA.setText(naechsteFrage.antworten[0]);
+        antwortB.setText(naechsteFrage.antworten[1]);
+        antwortC.setText(naechsteFrage.antworten[2]);
+        antwortD.setText(naechsteFrage.antworten[3]);
     }
+
 
     protected abstract String getFragenDatei();
 
