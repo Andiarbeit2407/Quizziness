@@ -133,8 +133,8 @@ public abstract class Quiz extends JFrame {
                     case KeyEvent.VK_2 -> antwortB.doClick();
                     case KeyEvent.VK_3 -> antwortC.doClick();
                     case KeyEvent.VK_4 -> antwortD.doClick();
-                    case KeyEvent.VK_ENTER -> FrageUeberspringenButton.doClick();
-                    case KeyEvent.VK_ESCAPE, KeyEvent.VK_Q -> {
+                    case KeyEvent.VK_ENTER, KeyEvent.VK_S -> FrageUeberspringenButton.doClick();
+                    case KeyEvent.VK_ESCAPE, KeyEvent.VK_INSERT, KeyEvent.VK_B -> {
                         dispose();
                         new Hauptmenu();
                     }

@@ -5,6 +5,7 @@ import java.awt.event.*;
 // Runde Button-Klasse
 class RoundedButton extends JButton {
 
+
     private int radius;
 
     public RoundedButton(String text, int radius) {
@@ -175,6 +176,21 @@ public class Hauptmenu extends JFrame {
         });
 
         setExtendedState(JFrame.MAXIMIZED_BOTH);
+
+        // Tastenkürzel hinzufügen
+        this.setFocusable(true);
+        this.requestFocusInWindow();
+        this.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_1, KeyEvent.VK_Q -> quizButton.doClick(); // 1 für Quiz starten
+                    case KeyEvent.VK_2, KeyEvent.VK_F -> frageHinzufuegenButton.doClick(); // 2 für Frage hinzufügen
+                }
+            }
+        });
+
+
         setVisible(true);
         aktualisiereFonts();
     }
@@ -214,6 +230,8 @@ public class Hauptmenu extends JFrame {
         quizButton.setForeground(textColor);
         frageHinzufuegenButton.setForeground(textColor);
     }
+
+
 
     public static void main(String[] args) {
         StyleManager.loadConfig("config.properties");

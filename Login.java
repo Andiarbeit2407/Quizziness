@@ -146,6 +146,29 @@ public class Login extends JFrame {
         }
 
         setExtendedState(JFrame.MAXIMIZED_BOTH);
+
+// In deinem Konstruktor, nach dem Aufbau der GUI:
+        InputMap inputMap = panel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap actionMap = panel.getActionMap();
+
+// Taste 1, L oder ENTER → Login
+        inputMap.put(KeyStroke.getKeyStroke("ENTER"), "login");
+        actionMap.put("login", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                loginButton.doClick();
+            }
+        });
+
+// Taste 2 oder R → Registrieren
+        inputMap.put(KeyStroke.getKeyStroke("INSERT"), "register");
+        actionMap.put("register", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                registerButton.doClick();
+            }
+        });
+
         // Macht das Fenster sichtbar
         setVisible(true);
     }
