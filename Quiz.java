@@ -2,7 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
-import java.awt.event.*;
 
 public abstract class Quiz extends JFrame {
 
@@ -10,7 +9,7 @@ public abstract class Quiz extends JFrame {
     protected int aktuelleFrageIndex = 0;
     protected int timeRemaining;
     protected Timer timer;
-    private JProgressBar timerBar; // Fortschrittsbalken statt Text
+    private JProgressBar timerBar;
     private JLabel statusLabel;
     protected int punkte = 0;
     protected int gesamtPunkte = 0;
@@ -84,7 +83,6 @@ public abstract class Quiz extends JFrame {
         gbc.gridwidth = 2;
         panel.add(FrageUeberspringenButton, gbc);
 
-        // Fortschrittsbalken statt timerLabel
         timerBar = new JProgressBar(0, 100);
         timerBar.setStringPainted(false);
         timerBar.setFont(new Font("Arial", Font.BOLD, 16));
@@ -124,7 +122,7 @@ public abstract class Quiz extends JFrame {
                 aktualisiereFonts(frageFeld, new JButton[]{antwortA, antwortB, antwortC, antwortD, hauptmenuButton, FrageUeberspringenButton});
             }
         });
-        // 🔑 Tastatureingabe für Antworten und Navigation
+
         panel.setFocusable(true);
         panel.requestFocusInWindow();
         panel.addKeyListener(new KeyAdapter() {
@@ -139,7 +137,6 @@ public abstract class Quiz extends JFrame {
                     case KeyEvent.VK_ESCAPE, KeyEvent.VK_Q -> {
                         dispose();
                         new Hauptmenu();
-
                     }
                 }
             }
@@ -196,7 +193,6 @@ public abstract class Quiz extends JFrame {
         if (timer != null) timer.stop();
 
         JButton[] buttons = new JButton[]{antwortA, antwortB, antwortC, antwortD};
-
         Color defaultBg = StyleManager.getColor("secondary.color", Color.LIGHT_GRAY);
         Color defaultFg = StyleManager.getColor("fixedfont.color", Color.WHITE);
         Color richtigColor = new Color(0, 160, 0);
@@ -213,7 +209,6 @@ public abstract class Quiz extends JFrame {
 
         if (ausgewaehlteAntwort != 5) {
             boolean istRichtig = aktuelleFrage.loesung[ausgewaehlteAntwort];
-
             if (istRichtig) {
                 buttons[ausgewaehlteAntwort].setBackground(richtigColor);
                 punkte += timeRemaining;
@@ -257,35 +252,6 @@ public abstract class Quiz extends JFrame {
             btn.setForeground(defaultFg);
             btn.setBorder(null);
         }
-        JButton[] buttons = {antwortA, antwortB, antwortC, antwortD};
-
-        if (ausgewaehlteAntwort != 5) {
-            QuizDaten aktuelleFrage = fragenListe.get(aktuelleFrageIndex);
-            boolean istRichtig = aktuelleFrage.loesung[ausgewaehlteAntwort];
-
-            // 🔸 Visuelles Feedback (grün/rot)
-            buttons[ausgewaehlteAntwort].setBackground(istRichtig ? Color.GREEN : Color.RED);
-            JOptionPane.showMessageDialog(this, istRichtig ? "Richtig!" : "Falsch!");
-        }
-
-        aktuelleFrageIndex++;
-        if (aktuelleFrageIndex >= fragenListe.size()) {
-            JOptionPane.showMessageDialog(this, "Quiz beendet.");
-            dispose();
-            new Hauptmenu();
-            return;
-        }
-
-        // Neue Frage anzeigen
-        for (int i = 0; i < 4; i++) {
-            buttons[i].setText(naechsteFrage.antworten[i]);
-            buttons[i].setBackground(StyleManager.getColor("answer.color", Color.LIGHT_GRAY)); // Hintergrund zurücksetzen
-
-
-
-
-        }
-    }
 
         starteTimer(frageFeld, antwortA, antwortB, antwortC, antwortD);
     }
