@@ -1,9 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
+import java.awt.event.*;
 import java.util.List;
 
 public abstract class Quiz extends JFrame {
@@ -104,6 +101,26 @@ public abstract class Quiz extends JFrame {
                 aktualisiereFonts(frageFeld, new JButton[]{antwortA, antwortB, antwortC, antwortD, hauptmenuButton, FrageUeberspringenButton});
             }
         });
+        // 🔑 Tastatureingabe für Antworten und Navigation
+        panel.setFocusable(true);
+        panel.requestFocusInWindow();
+        panel.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_1 -> antwortA.doClick();
+                    case KeyEvent.VK_2 -> antwortB.doClick();
+                    case KeyEvent.VK_3 -> antwortC.doClick();
+                    case KeyEvent.VK_4 -> antwortD.doClick();
+                    case KeyEvent.VK_ENTER -> FrageUeberspringenButton.doClick();
+                    case KeyEvent.VK_ESCAPE, KeyEvent.VK_Q -> {
+                        dispose();
+                        new Hauptmenu();
+
+                    }
+                }
+            }
+        });
 
         // Panel dem Fenster hinzufügen
         add(panel);
@@ -133,6 +150,34 @@ public abstract class Quiz extends JFrame {
         antwortB.setText(naechsteFrage.antworten[1]);
         antwortC.setText(naechsteFrage.antworten[2]);
         antwortD.setText(naechsteFrage.antworten[3]);
+        JButton[] buttons = {antwortA, antwortB, antwortC, antwortD};
+
+        if (ausgewaehlteAntwort != 5) {
+            QuizDaten aktuelleFrage = fragenListe.get(aktuelleFrageIndex);
+            boolean istRichtig = aktuelleFrage.loesung[ausgewaehlteAntwort];
+
+            // 🔸 Visuelles Feedback (grün/rot)
+            buttons[ausgewaehlteAntwort].setBackground(istRichtig ? Color.GREEN : Color.RED);
+            JOptionPane.showMessageDialog(this, istRichtig ? "Richtig!" : "Falsch!");
+        }
+
+        aktuelleFrageIndex++;
+        if (aktuelleFrageIndex >= fragenListe.size()) {
+            JOptionPane.showMessageDialog(this, "Quiz beendet.");
+            dispose();
+            new Hauptmenu();
+            return;
+        }
+
+        // Neue Frage anzeigen
+        for (int i = 0; i < 4; i++) {
+            buttons[i].setText(naechsteFrage.antworten[i]);
+            buttons[i].setBackground(StyleManager.getColor("answer.color", Color.LIGHT_GRAY)); // Hintergrund zurücksetzen
+
+
+
+
+        }
     }
 
     // 🔁 Muss von Unterklassen überschrieben werden

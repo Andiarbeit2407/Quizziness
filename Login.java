@@ -8,6 +8,7 @@ public class Login extends JFrame {
 
     // Konstruktor für das Login-Fenster
     public Login() {
+        
         // Setzt den Titel des Fensters
         setTitle("Login");
 
