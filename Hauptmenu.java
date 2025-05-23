@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 
 // Runde Button-Klasse
 class RoundedButton extends JButton {
@@ -69,6 +70,8 @@ public class Hauptmenu extends JFrame {
         benutzerLabel.setHorizontalAlignment(SwingConstants.LEFT);
         benutzerLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 10));
         add(benutzerLabel, BorderLayout.SOUTH);
+        benutzerLabel.setBackground((StyleManager.getColor("", Color.BLACK)));
+
 
         quizButton = new RoundedButton("Quiz starten", 30);
         frageHinzufuegenButton = new RoundedButton("Frage hinzufügen", 30);
@@ -107,7 +110,7 @@ public class Hauptmenu extends JFrame {
         });
 
         JMenuBar menuBar = new JMenuBar();
-        JMenu einstellungenMenu = new JMenu("Einstellungen");
+        JMenu personalisierungMenu = new JMenu("Personalisierung");
 
         JMenuItem farbschemaItem = new JMenuItem("Farbschema ändern...");
         farbschemaItem.addActionListener(e -> {
@@ -145,9 +148,44 @@ public class Hauptmenu extends JFrame {
             }
         });
 
-        einstellungenMenu.add(farbschemaItem);
-        einstellungenMenu.add(textfarbeItem);
-        menuBar.add(einstellungenMenu);
+        JMenu hilfeMenu = new JMenu("Hilfe");
+
+        JMenuItem shortcutItem = new JMenuItem("Shortcuts...");
+        shortcutItem.addActionListener(e -> {
+            try {
+                File file = new File("shortcuts.txt");
+                if (!file.exists()) {
+                    file.createNewFile(); // optional: Datei anlegen, falls nicht vorhanden
+                }
+                Desktop.getDesktop().open(file);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                javax.swing.JOptionPane.showMessageDialog(null, "Datei konnte nicht geöffnet werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        JMenu profilMenu = new JMenu("Profil");
+        JMenuItem ausloggenItem = new JMenuItem("Ausloggen");
+        ausloggenItem.addActionListener(e -> {
+                    new Login();
+                    dispose();
+                });
+
+
+
+        shortcutItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK));
+        farbschemaItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK));
+        textfarbeItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK));
+        ausloggenItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK));
+
+
+        hilfeMenu.add(shortcutItem);
+        personalisierungMenu.add(farbschemaItem);
+        profilMenu.add(ausloggenItem);
+        personalisierungMenu.add(textfarbeItem);
+        menuBar.add(profilMenu);
+        menuBar.add(personalisierungMenu);
+        menuBar.add(hilfeMenu);
         setJMenuBar(menuBar);
 
         ImageIcon icon = new ImageIcon("Quizziness162.png");
@@ -226,7 +264,6 @@ public class Hauptmenu extends JFrame {
     private void aktualisiereTextfarben() {
         Color textColor = StyleManager.getColor("fixedfont.color", Color.WHITE);
         titelLabel.setForeground(textColor);
-        benutzerLabel.setForeground(textColor);
         quizButton.setForeground(textColor);
         frageHinzufuegenButton.setForeground(textColor);
     }

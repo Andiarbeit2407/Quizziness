@@ -83,8 +83,7 @@ public class QuizEingabe extends JFrame {
 			}
 		});
 
-// Taste 2 oder R → Registrieren
-		inputMap.put(KeyStroke.getKeyStroke("INSERT"), "register");
+		inputMap.put(KeyStroke.getKeyStroke("ESCAPE"), "register");
 		actionMap.put("register", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
