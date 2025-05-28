@@ -1,82 +1,90 @@
+// Importieren der benötigten Klassen für GUI-Elemente und Event-Handling
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 
+// Definition der Klasse Login, die ein Fenster (JFrame) darstellt
 public class Login extends JFrame {
 
     private static final String FILE_NAME = "users.txt";
     private static final int KEY = 33;
 
+    // Konstruktor für das Login-Fenster
     public Login() {
+        // Setzt den Titel des Fensters
         setTitle("Login");
+
+        // Setzt die Fenstergröße auf 600x300 Pixel
         setSize(600, 100);
+
+        // Zentriert das Fenster auf dem Bildschirm
         setLocationRelativeTo(null);
+
+        // Definiert, dass das Programm beendet wird, wenn das Fenster geschlossen wird
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // GUI Layout
+
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setBackground(StyleManager.getColor("primary.color", Color.WHITE));
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
-        gbc.insets = new Insets(10, 0, 10, 0);
+        gbc.insets = new Insets(10, 0, 10, 0); // Abstand zwischen den Elementen
         gbc.fill = GridBagConstraints.NONE;
 
-        // Name Label
+// Name-Label
         gbc.gridy = 0;
         JLabel nameLabel = new JLabel("Dein Name:");
         nameLabel.setForeground(StyleManager.getColor("fixedfont.color", Color.WHITE));
-        nameLabel.setFont(new Font("Arial", Font.BOLD, 20));
         panel.add(nameLabel, gbc);
 
-        // Namensfeld
+// Namensfeld
         gbc.gridy = 1;
         JTextField nameField = new JTextField(15);
         nameField.setPreferredSize(new Dimension(200, 30));
-        nameField.setFont(new Font("Arial", Font.PLAIN, 20));
         panel.add(nameField, gbc);
 
-        // Passwort Label
+// Passwort-Label
         gbc.gridy = 2;
         JLabel passLabel = new JLabel("Passwort:");
         passLabel.setForeground(StyleManager.getColor("fixedfont.color", Color.WHITE));
-        passLabel.setFont(new Font("Arial", Font.BOLD, 20));
         panel.add(passLabel, gbc);
 
-        // Passwortfeld
+// Passwortfeld
         gbc.gridy = 3;
         JPasswordField passField = new JPasswordField(15);
         passField.setPreferredSize(new Dimension(200, 30));
-        passField.setFont(new Font("Arial", Font.PLAIN, 20));
         panel.add(passField, gbc);
 
-        // Login-Button
+// Login-Button
         gbc.gridy = 4;
         JButton loginButton = new JButton("Login");
         loginButton.setPreferredSize(new Dimension(200, 30));
-        loginButton.setFont(new Font("Arial", Font.BOLD, 20));
         panel.add(loginButton, gbc);
 
-        // Registrieren-Button
+// Registrieren-Button
         gbc.gridy = 5;
         JButton registerButton = new JButton("Registrieren");
         registerButton.setPreferredSize(new Dimension(200, 30));
-        registerButton.setFont(new Font("Arial", Font.BOLD, 20));
         panel.add(registerButton, gbc);
 
-        // Farben für Textfelder & Buttons
-        Color buttonAndTextBg = StyleManager.getColor("secondary.color", Color.LIGHT_GRAY);
-        Color textColor = StyleManager.getColor("fixedfont.color", Color.WHITE);
+        // Setzt die Textfarbe für bessere Lesbarkeit bei dunklem Hintergrund
+        nameLabel.setForeground(StyleManager.getColor("fixedfont.color", Color.WHITE));
+        // Setzt die Textfarbe für bessere Lesbarkeit bei dunklem Hintergrund
+        passLabel.setForeground(StyleManager.getColor("fixedfont.color", Color.WHITE));
 
-        for (Component comp : panel.getComponents()) {
-            if (comp instanceof JButton || comp instanceof JTextField) {
-                comp.setBackground(buttonAndTextBg);
-                comp.setForeground(textColor);
-            }
-        }
+        // Style (using your StyleManager or default colors)
+        nameLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        passLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        nameField.setFont(new Font("Arial", Font.PLAIN, 20));
+        passField.setFont(new Font("Arial", Font.PLAIN, 20));
+        loginButton.setFont(new Font("Arial", Font.BOLD, 20));
+        registerButton.setFont(new Font("Arial", Font.BOLD, 20));
 
-        // Action für Registrierung
+        add(panel);
+
+        // Action for Register button
         registerButton.addActionListener(e -> {
             String username = nameField.getText().trim();
             String password = new String(passField.getPassword()).trim();
@@ -99,7 +107,7 @@ public class Login extends JFrame {
             }
         });
 
-        // Action für Login
+        // Action for Login button
         loginButton.addActionListener(e -> {
             String username = nameField.getText().trim();
             String password = new String(passField.getPassword()).trim();
@@ -112,9 +120,10 @@ public class Login extends JFrame {
             try {
                 if (loginUser(username, password)) {
                     JOptionPane.showMessageDialog(this, "Login erfolgreich!");
-                    Benutzername.username = username;
+                    // Open your main menu or next window here
+                    Benutzername.username = username;  // Hier sicher setzen
                     dispose();
-                    new Hauptmenu();  // Hauptmenü starten
+                    new Hauptmenu(); // your existing main menu class
                 } else {
                     JOptionPane.showMessageDialog(this, "Ungültiger Benutzername oder Passwort.");
                 }
@@ -124,12 +133,46 @@ public class Login extends JFrame {
             }
         });
 
-        add(panel);
+        panel.setBackground(StyleManager.getColor("primary.color", Color.WHITE));
+        Color buttonAndTextBg = StyleManager.getColor("secondary.color", Color.LIGHT_GRAY);
+        Color textColor = StyleManager.getColor("fixedfont.color", Color.WHITE);
+
+        // Durchläuft alle Komponenten im Panel
+        for (Component comp : panel.getComponents()) {
+            if (comp instanceof JButton || comp instanceof JTextField) {
+                comp.setBackground(buttonAndTextBg);
+                comp.setForeground(textColor);
+            }
+        }
+
         setExtendedState(JFrame.MAXIMIZED_BOTH);
+
+// In deinem Konstruktor, nach dem Aufbau der GUI:
+        InputMap inputMap = panel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap actionMap = panel.getActionMap();
+
+// Taste 1, L oder ENTER → Login
+        inputMap.put(KeyStroke.getKeyStroke("ENTER"), "login");
+        actionMap.put("login", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                loginButton.doClick();
+            }
+        });
+
+// Taste 2 oder R → Registrieren
+        inputMap.put(KeyStroke.getKeyStroke("INSERT"), "register");
+        actionMap.put("register", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                registerButton.doClick();
+            }
+        });
+
+        // Macht das Fenster sichtbar
         setVisible(true);
     }
 
-    // Prüft, ob ein Benutzer bereits existiert
     private boolean userExists(String username) throws IOException {
         File file = new File(FILE_NAME);
         if (!file.exists()) return false;
@@ -144,8 +187,6 @@ public class Login extends JFrame {
         }
         return false;
     }
-
-    // Registriert neuen Benutzer (verschlüsselt Passwort)
     private void registerUser(String username, String password) throws IOException {
         String encryptedPassword = Verschlüsselung.caesarEncrypt(password, KEY);
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
@@ -154,7 +195,6 @@ public class Login extends JFrame {
         }
     }
 
-    // Prüft Login durch Passwort-Vergleich
     private boolean loginUser(String username, String password) throws IOException {
         File file = new File(FILE_NAME);
         if (!file.exists()) return false;
@@ -174,8 +214,13 @@ public class Login extends JFrame {
         return false;
     }
 
+
+    // Main-Methode zum Starten der Anwendung
     public static void main(String[] args) {
+        // Lade externe Style-Konfiguration, falls vorhanden
         StyleManager.loadConfig("config.properties");
+
+        // Starte die Login-GUI im Event-Dispatch-Thread
         SwingUtilities.invokeLater(Login::new);
     }
 }
