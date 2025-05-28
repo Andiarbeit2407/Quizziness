@@ -33,7 +33,6 @@ public abstract class Quiz extends JFrame {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
 
-        // Fragefeld
         JTextArea frageFeld = new JTextArea(fragenListe.get(aktuelleFrageIndex).frage, 4, 3);
         frageFeld.setLineWrap(true);
         frageFeld.setWrapStyleWord(true);
@@ -43,46 +42,53 @@ public abstract class Quiz extends JFrame {
         gbc.gridwidth = 2;
         panel.add(frageFeld, gbc);
 
-        // Antwortbuttons
         JButton antwortA = new JButton(fragenListe.get(aktuelleFrageIndex).antworten[0]);
         JButton antwortB = new JButton(fragenListe.get(aktuelleFrageIndex).antworten[1]);
         JButton antwortC = new JButton(fragenListe.get(aktuelleFrageIndex).antworten[2]);
         JButton antwortD = new JButton(fragenListe.get(aktuelleFrageIndex).antworten[3]);
 
         gbc.gridwidth = 1;
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        panel.add(antwortA, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        panel.add(antwortB, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        panel.add(antwortC, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        panel.add(antwortD, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 1; panel.add(antwortA, gbc);
-        gbc.gridx = 1; gbc.gridy = 1; panel.add(antwortB, gbc);
-        gbc.gridx = 0; gbc.gridy = 2; panel.add(antwortC, gbc);
-        gbc.gridx = 1; gbc.gridy = 2; panel.add(antwortD, gbc);
-
-        // Zurück zum Hauptmenü Button
         JButton hauptmenuButton = new JButton("Zurück zum Hauptmenü");
-        gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 2;
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 2;
         panel.add(hauptmenuButton, gbc);
 
-        // Frage überspringen Button
         JButton FrageUeberspringenButton = new JButton("Diese Frage überspringen");
-        gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 2;
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.gridwidth = 2;
         panel.add(FrageUeberspringenButton, gbc);
 
-        // Timer Fortschrittsbalken
         timerBar = new JProgressBar(0, 100);
         timerBar.setStringPainted(false);
         timerBar.setFont(new Font("Arial", Font.BOLD, 16));
         timerBar.setForeground(Color.GREEN);
         timerBar.setBackground(Color.LIGHT_GRAY);
-        gbc.gridx = 0; gbc.gridy = 5; gbc.gridwidth = 2;
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        gbc.gridwidth = 2;
         panel.add(timerBar, gbc);
 
-        // Statuszeile mit Benutzername und Punktestand
         statusLabel = new JLabel("Angemeldet als: " + Benutzername.username + " | Punkte: " + punkte + "/" + gesamtPunkte);
         statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
         statusLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 10));
         statusLabel.setForeground(Color.BLACK);
         add(statusLabel, BorderLayout.SOUTH);
 
-        // Listener
         hauptmenuButton.addActionListener(e -> {
             if (timer != null) timer.stop();
             dispose();
@@ -95,7 +101,6 @@ public abstract class Quiz extends JFrame {
         antwortC.addActionListener(e -> verarbeiteAntwort(2, frageFeld, antwortA, antwortB, antwortC, antwortD));
         antwortD.addActionListener(e -> verarbeiteAntwort(3, frageFeld, antwortA, antwortB, antwortC, antwortD));
 
-        // Styling über StyleManager
         panel.setBackground(StyleManager.getColor("primary.color", Color.WHITE));
         Color buttonAndTextBg = StyleManager.getColor("secondary.color", Color.LIGHT_GRAY);
         Color textColor = StyleManager.getColor("fixedfont.color", Color.WHITE);
@@ -107,7 +112,6 @@ public abstract class Quiz extends JFrame {
             }
         }
 
-        // Schriftanpassung bei Größenänderung
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -115,7 +119,6 @@ public abstract class Quiz extends JFrame {
             }
         });
 
-        // KeyListener für Tastatursteuerung
         panel.setFocusable(true);
         panel.requestFocusInWindow();
         panel.addKeyListener(new KeyAdapter() {
@@ -126,8 +129,8 @@ public abstract class Quiz extends JFrame {
                     case KeyEvent.VK_2 -> antwortB.doClick();
                     case KeyEvent.VK_3 -> antwortC.doClick();
                     case KeyEvent.VK_4 -> antwortD.doClick();
-                    case KeyEvent.VK_ENTER -> FrageUeberspringenButton.doClick();
-                    case KeyEvent.VK_ESCAPE, KeyEvent.VK_Q -> {
+                    case KeyEvent.VK_ENTER, KeyEvent.VK_S -> FrageUeberspringenButton.doClick();
+                    case KeyEvent.VK_ESCAPE, KeyEvent.VK_B -> {
                         if (timer != null) timer.stop();
                         dispose();
                         new Hauptmenu();
@@ -143,7 +146,6 @@ public abstract class Quiz extends JFrame {
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
 
-        // Timer starten
         starteTimer(frageFeld, antwortA, antwortB, antwortC, antwortD);
     }
 
@@ -193,7 +195,6 @@ public abstract class Quiz extends JFrame {
         Color richtigColor = new Color(0, 160, 0);
         Color falschColor = new Color(200, 0, 0);
 
-        // Reset Farben der Buttons
         for (JButton btn : buttons) {
             btn.setBackground(defaultBg);
             btn.setForeground(defaultFg);
@@ -203,7 +204,7 @@ public abstract class Quiz extends JFrame {
         QuizDaten aktuelleFrage = fragenListe.get(aktuelleFrageIndex);
         gesamtPunkte += aktuelleFrage.time;
 
-        if (ausgewaehlteAntwort != 5) { // 5 = überspringen
+        if (ausgewaehlteAntwort != 5) {
             boolean istRichtig = aktuelleFrage.loesung[ausgewaehlteAntwort];
             if (istRichtig) {
                 buttons[ausgewaehlteAntwort].setBackground(richtigColor);
@@ -215,7 +216,6 @@ public abstract class Quiz extends JFrame {
 
         statusLabel.setText("Angemeldet als: " + Benutzername.username + " | Punkte: " + punkte + "/" + gesamtPunkte);
 
-        // Kurze Verzögerung bevor nächste Frage geladen wird
         new Timer(1000, e -> {
             ((Timer) e.getSource()).stop();
             zeigeNaechsteFrage(frageFeld, antwortA, antwortB, antwortC, antwortD);
@@ -225,56 +225,46 @@ public abstract class Quiz extends JFrame {
     private void zeigeNaechsteFrage(JTextArea frageFeld,
                                     JButton antwortA, JButton antwortB,
                                     JButton antwortC, JButton antwortD) {
-
         aktuelleFrageIndex++;
+
         if (aktuelleFrageIndex >= fragenListe.size()) {
-            JOptionPane.showMessageDialog(this, "Quiz beendet.\nEndpunktestand: " + punkte + "/" + gesamtPunkte);
+            JOptionPane.showMessageDialog(this, "Quiz beendet!\nPunkte: " + punkte + "/" + gesamtPunkte);
             dispose();
             new Hauptmenu();
             return;
         }
 
-        QuizDaten naechsteFrage = fragenListe.get(aktuelleFrageIndex);
-        frageFeld.setText(naechsteFrage.frage);
-        antwortA.setText(naechsteFrage.antworten[0]);
-        antwortB.setText(naechsteFrage.antworten[1]);
-        antwortC.setText(naechsteFrage.antworten[2]);
-        antwortD.setText(naechsteFrage.antworten[3]);
+        QuizDaten aktuelleFrage = fragenListe.get(aktuelleFrageIndex);
+        frageFeld.setText(aktuelleFrage.frage);
 
         JButton[] buttons = new JButton[]{antwortA, antwortB, antwortC, antwortD};
-        Color defaultBg = StyleManager.getColor("secondary.color", Color.LIGHT_GRAY);
-        Color defaultFg = StyleManager.getColor("fixedfont.color", Color.WHITE);
-        for (JButton btn : buttons) {
-            btn.setBackground(defaultBg);
-            btn.setForeground(defaultFg);
-            btn.setBorder(null);
+        for (int i = 0; i < buttons.length; i++) {
+            buttons[i].setText(aktuelleFrage.antworten[i]);
+            buttons[i].setBackground(StyleManager.getColor("secondary.color", Color.LIGHT_GRAY));
+            buttons[i].setForeground(StyleManager.getColor("fixedfont.color", Color.WHITE));
+            buttons[i].setBorder(null);
         }
+
+        statusLabel.setText("Angemeldet als: " + Benutzername.username + " | Punkte: " + punkte + "/" + gesamtPunkte);
 
         starteTimer(frageFeld, antwortA, antwortB, antwortC, antwortD);
     }
 
-    protected abstract String getFragenDatei();
-
     private void aktualisiereFonts(JTextArea frageFeld, JButton[] buttons) {
         int breite = getWidth();
-        float faktor = breite / 500.0f;
-        int labelFontSize = Math.round(12 * faktor);
+        int hoehe = getHeight();
 
-        int frageFontSize = Math.round(15 * faktor);
-        int buttonFontSize = Math.round(12 * faktor);
+        float frageFontSize = Math.min(breite / 25f, hoehe / 15f);
+        float antwortFontSize = Math.min(breite / 40f, hoehe / 20f);
 
-        frageFeld.setFont(new Font("Arial", Font.BOLD, frageFontSize));
-        for (JButton b : buttons) {
-            b.setFont(new Font("Arial", Font.BOLD, buttonFontSize));
+        frageFeld.setFont(frageFeld.getFont().deriveFont(Font.BOLD, frageFontSize));
+        for (JButton button : buttons) {
+            button.setFont(button.getFont().deriveFont(Font.PLAIN, antwortFontSize));
         }
-        timerBar.setFont(new Font("Arial", Font.BOLD, Math.round(16 * faktor)));
-        statusLabel.setFont(new Font("Arial", Font.BOLD, labelFontSize));
+        statusLabel.setFont(statusLabel.getFont().deriveFont(Font.PLAIN, antwortFontSize));
+        timerBar.setFont(timerBar.getFont().deriveFont(Font.BOLD, antwortFontSize));
     }
 
-    public static class Main {
-        public static void main(String[] args) {
-            StyleManager.loadConfig("config.properties");
-            SwingUtilities.invokeLater(Hauptmenu::new);
-        }
-    }
+    protected abstract String getFragenDatei();
+
 }
