@@ -1,3 +1,5 @@
 Smon:c(1'$
 root:$'0,1
 mini-pekka:0,1,N3(..$
+ASDF:$6')
+asdf:$6')

@@ -16,7 +16,7 @@ public class Login extends JFrame {
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
-        gbc.insets = new Insets(10, 0, 10, 0);
+        gbc.insets = new Insets(10, 10, 20, 10);
         gbc.fill = GridBagConstraints.NONE;
 
         JLabel nameLabel = new JLabel("Dein Name:");
