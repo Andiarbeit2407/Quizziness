@@ -1,61 +1,18 @@
+// Importieren der benötigten Klassen für GUI-Elemente, Layouts und Event-Handling
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-// Runde Button-Klasse
-class RoundedButton extends JButton {
-
-    private int radius;
-
-    public RoundedButton(String text, int radius) {
-        super(text);
-        this.radius = radius;
-        setContentAreaFilled(false);
-        setFocusPainted(false);
-        setBorderPainted(false);
-        setOpaque(false);
-    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g.create();
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-        g2.setColor(getBackground());
-        g2.fillRoundRect(0, 0, getWidth(), getHeight(), radius, radius);
-
-        super.paintComponent(g2);
-        g2.dispose();
-    }
-
-    @Override
-    public void paintBorder(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g.create();
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setColor(getForeground());
-        g2.drawRoundRect(0, 0, getWidth()-1, getHeight()-1, radius, radius);
-        g2.dispose();
-    }
-
-    @Override
-    public boolean contains(int x, int y) {
-        Shape shape = new java.awt.geom.RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), radius, radius);
-        return shape.contains(x, y);
-    }
-}
-
-// Hauptmenu-Klasse
 public class Hauptmenu extends JFrame {
-
     private JLabel titelLabel;
     private JLabel benutzerLabel;
-    private RoundedButton quizButton;
-    private RoundedButton frageHinzufuegenButton;
+    private JButton quizButton;
+    private JButton frageHinzufuegenButton;
     private JPanel buttonPanel;
 
     public Hauptmenu() {
         setTitle("Quiz Hauptmenü");
-        setSize(800, 800);
+        setSize(800, 900);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
@@ -135,8 +92,7 @@ public class Hauptmenu extends JFrame {
                     JOptionPane.PLAIN_MESSAGE,
                     null,
                     optionen,
-                    optionen[0]
-            );
+                    optionen[0]);
             if (auswahl != null) {
                 String hex = auswahl.contains("Weiß") ? "#FFFFFF" : "#000000";
                 StyleManager.setColor("fixedfont.color", hex);
@@ -155,16 +111,7 @@ public class Hauptmenu extends JFrame {
         bildLabel.setHorizontalAlignment(SwingConstants.CENTER);
         add(bildLabel, BorderLayout.BEFORE_FIRST_LINE);
 
-        buttonPanel.setBackground(StyleManager.getColor("primary.color", Color.WHITE));
-        Color buttonAndTextBg = StyleManager.getColor("secondary.color", Color.LIGHT_GRAY);
-        Color textColor = StyleManager.getColor("fixedfont.color", Color.WHITE);
-        for (Component comp : buttonPanel.getComponents()) {
-            if (comp instanceof JButton || comp instanceof JTextField) {
-                comp.setBackground(buttonAndTextBg);
-                comp.setForeground(textColor);
-            }
-        }
-
+        aktualisiereFarben();
         aktualisiereTextfarben();
 
         addComponentListener(new ComponentAdapter() {

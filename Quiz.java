@@ -33,6 +33,7 @@ public abstract class Quiz extends JFrame {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
 
+        // Fragefeld
         JTextArea frageFeld = new JTextArea(fragenListe.get(aktuelleFrageIndex).frage, 4, 3);
         frageFeld.setLineWrap(true);
         frageFeld.setWrapStyleWord(true);
@@ -42,6 +43,7 @@ public abstract class Quiz extends JFrame {
         gbc.gridwidth = 2;
         panel.add(frageFeld, gbc);
 
+        // Antwortbuttons
         JButton antwortA = new JButton(fragenListe.get(aktuelleFrageIndex).antworten[0]);
         JButton antwortB = new JButton(fragenListe.get(aktuelleFrageIndex).antworten[1]);
         JButton antwortC = new JButton(fragenListe.get(aktuelleFrageIndex).antworten[2]);
@@ -49,55 +51,43 @@ public abstract class Quiz extends JFrame {
 
         gbc.gridwidth = 1;
 
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        panel.add(antwortA, gbc);
+        gbc.gridx = 0; gbc.gridy = 1; panel.add(antwortA, gbc);
+        gbc.gridx = 1; gbc.gridy = 1; panel.add(antwortB, gbc);
+        gbc.gridx = 0; gbc.gridy = 2; panel.add(antwortC, gbc);
+        gbc.gridx = 1; gbc.gridy = 2; panel.add(antwortD, gbc);
 
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        panel.add(antwortB, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        panel.add(antwortC, gbc);
-
-        gbc.gridx = 1;
-        gbc.gridy = 2;
-        panel.add(antwortD, gbc);
-
+        // Zurück zum Hauptmenü Button
         JButton hauptmenuButton = new JButton("Zurück zum Hauptmenü");
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        gbc.gridwidth = 2;
+        gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 2;
         panel.add(hauptmenuButton, gbc);
 
-        hauptmenuButton.addActionListener(e -> {
-            if (timer != null) timer.stop();
-            dispose();
-            new Hauptmenu();
-        });
-
+        // Frage überspringen Button
         JButton FrageUeberspringenButton = new JButton("Diese Frage überspringen");
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        gbc.gridwidth = 2;
+        gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 2;
         panel.add(FrageUeberspringenButton, gbc);
 
+        // Timer Fortschrittsbalken
         timerBar = new JProgressBar(0, 100);
         timerBar.setStringPainted(false);
         timerBar.setFont(new Font("Arial", Font.BOLD, 16));
         timerBar.setForeground(Color.GREEN);
         timerBar.setBackground(Color.LIGHT_GRAY);
-        gbc.gridx = 0;
-        gbc.gridy = 5;
-        gbc.gridwidth = 2;
+        gbc.gridx = 0; gbc.gridy = 5; gbc.gridwidth = 2;
         panel.add(timerBar, gbc);
 
+        // Statuszeile mit Benutzername und Punktestand
         statusLabel = new JLabel("Angemeldet als: " + Benutzername.username + " | Punkte: " + punkte + "/" + gesamtPunkte);
         statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
         statusLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 10));
         statusLabel.setForeground(Color.BLACK);
         add(statusLabel, BorderLayout.SOUTH);
+
+        // Listener
+        hauptmenuButton.addActionListener(e -> {
+            if (timer != null) timer.stop();
+            dispose();
+            new Hauptmenu();
+        });
 
         FrageUeberspringenButton.addActionListener(e -> verarbeiteAntwort(5, frageFeld, antwortA, antwortB, antwortC, antwortD));
         antwortA.addActionListener(e -> verarbeiteAntwort(0, frageFeld, antwortA, antwortB, antwortC, antwortD));
@@ -105,6 +95,7 @@ public abstract class Quiz extends JFrame {
         antwortC.addActionListener(e -> verarbeiteAntwort(2, frageFeld, antwortA, antwortB, antwortC, antwortD));
         antwortD.addActionListener(e -> verarbeiteAntwort(3, frageFeld, antwortA, antwortB, antwortC, antwortD));
 
+        // Styling über StyleManager
         panel.setBackground(StyleManager.getColor("primary.color", Color.WHITE));
         Color buttonAndTextBg = StyleManager.getColor("secondary.color", Color.LIGHT_GRAY);
         Color textColor = StyleManager.getColor("fixedfont.color", Color.WHITE);
@@ -116,6 +107,7 @@ public abstract class Quiz extends JFrame {
             }
         }
 
+        // Schriftanpassung bei Größenänderung
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -123,6 +115,7 @@ public abstract class Quiz extends JFrame {
             }
         });
 
+        // KeyListener für Tastatursteuerung
         panel.setFocusable(true);
         panel.requestFocusInWindow();
         panel.addKeyListener(new KeyAdapter() {
@@ -135,6 +128,7 @@ public abstract class Quiz extends JFrame {
                     case KeyEvent.VK_4 -> antwortD.doClick();
                     case KeyEvent.VK_ENTER -> FrageUeberspringenButton.doClick();
                     case KeyEvent.VK_ESCAPE, KeyEvent.VK_Q -> {
+                        if (timer != null) timer.stop();
                         dispose();
                         new Hauptmenu();
                     }
@@ -149,6 +143,7 @@ public abstract class Quiz extends JFrame {
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
 
+        // Timer starten
         starteTimer(frageFeld, antwortA, antwortB, antwortC, antwortD);
     }
 
@@ -198,6 +193,7 @@ public abstract class Quiz extends JFrame {
         Color richtigColor = new Color(0, 160, 0);
         Color falschColor = new Color(200, 0, 0);
 
+        // Reset Farben der Buttons
         for (JButton btn : buttons) {
             btn.setBackground(defaultBg);
             btn.setForeground(defaultFg);
@@ -207,7 +203,7 @@ public abstract class Quiz extends JFrame {
         QuizDaten aktuelleFrage = fragenListe.get(aktuelleFrageIndex);
         gesamtPunkte += aktuelleFrage.time;
 
-        if (ausgewaehlteAntwort != 5) {
+        if (ausgewaehlteAntwort != 5) { // 5 = überspringen
             boolean istRichtig = aktuelleFrage.loesung[ausgewaehlteAntwort];
             if (istRichtig) {
                 buttons[ausgewaehlteAntwort].setBackground(richtigColor);
@@ -219,6 +215,7 @@ public abstract class Quiz extends JFrame {
 
         statusLabel.setText("Angemeldet als: " + Benutzername.username + " | Punkte: " + punkte + "/" + gesamtPunkte);
 
+        // Kurze Verzögerung bevor nächste Frage geladen wird
         new Timer(1000, e -> {
             ((Timer) e.getSource()).stop();
             zeigeNaechsteFrage(frageFeld, antwortA, antwortB, antwortC, antwortD);
