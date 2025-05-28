@@ -33,15 +33,50 @@ public abstract class Quiz extends JFrame {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
 
+        // Fragefeld
         JTextArea frageFeld = new JTextArea(fragenListe.get(aktuelleFrageIndex).frage, 4, 3);
         frageFeld.setLineWrap(true);
         frageFeld.setWrapStyleWord(true);
         frageFeld.setEditable(false);
+
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.gridwidth = 2;
+        gbc.gridwidth = 1;
+        gbc.weightx = 0.8;
         panel.add(frageFeld, gbc);
 
+        // Neuer Button "Frage hinzufügen"
+        JButton frageHinzufuegenButton = new JButton("Frage hinzufügen");
+
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weightx = 0.2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        panel.add(frageHinzufuegenButton, gbc);
+
+        frageHinzufuegenButton.addActionListener(e -> {
+            String neueFrage = JOptionPane.showInputDialog(this, "Neue Frage eingeben:");
+            if (neueFrage != null && !neueFrage.trim().isEmpty()) {
+                // Beispiel: nur in Runtime hinzufügen (nicht gespeichert)
+                fragenListe.add(new QuizDaten(neueFrage, new String[]{"Antwort A", "Antwort B", "Antwort C", "Antwort D"}, new boolean[]{true, false, false, false}, 30));
+                JOptionPane.showMessageDialog(this, "Frage hinzugefügt (nur temporär).");
+            }
+        });
+
+        // Neuer Button "Frage löschen"
+        JButton frageLoeschenButton = new JButton("Frage löschen");
+
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        gbc.weightx = 0.2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        panel.add(frageLoeschenButton, gbc);
+
+        frageLoeschenButton.addActionListener(e -> {
+            new QuizLoeschen(); // Öffnet das Fenster zum Löschen von Fragen
+        });
+
+        // Antwort Buttons
         JButton antwortA = new JButton(fragenListe.get(aktuelleFrageIndex).antworten[0]);
         JButton antwortB = new JButton(fragenListe.get(aktuelleFrageIndex).antworten[1]);
         JButton antwortC = new JButton(fragenListe.get(aktuelleFrageIndex).antworten[2]);
@@ -119,7 +154,7 @@ public abstract class Quiz extends JFrame {
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                aktualisiereFonts(frageFeld, new JButton[]{antwortA, antwortB, antwortC, antwortD, hauptmenuButton, FrageUeberspringenButton});
+                aktualisiereFonts(frageFeld, new JButton[]{antwortA, antwortB, antwortC, antwortD, hauptmenuButton, FrageUeberspringenButton, frageHinzufuegenButton, frageLoeschenButton});
             }
         });
 
