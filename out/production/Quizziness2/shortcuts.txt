@@ -1,0 +1,29 @@
+Login:
+------------------------------------------------------------------------
+Tab		->	Allgemeine Navigation
+Enter		->	Login
+Einfg		->	Registrieren
+
+Hauptmenü:
+------------------------------------------------------------------------
+1/Q		->	Quiz starten
+2/F		->	Frage hinzufügen
+Ctrl+Shift+T	->	Textfarbe ändern
+Ctrl+Shift+C	->	Farbschema ändern
+Ctrl+Shift+S	->	Shortcut-Fenster aufrufen
+Ctrl+Shift+B	->	Ausloggen
+
+Frage hinzufügen:
+------------------------------------------------------------------------
+Tab		->	Allgemeine Navigation
+Enter		->	Frage hinzufügen
+Escape		->	Zurück zum Hauptmenü
+
+Quiz:
+------------------------------------------------------------------------
+1		->	Antwort 1
+2		->	Antwort 2
+3		->	Antwort 3
+4		->	Antwort 4
+Enter/S		->	Frage Überspringen
+Escape/B		->	Zurück zum Hauptmenü
