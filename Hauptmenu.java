@@ -6,7 +6,6 @@ import java.io.File;
 // Runde Button-Klasse
 class RoundedButton extends JButton {
 
-
     private int radius;
 
     public RoundedButton(String text, int radius) {
@@ -53,6 +52,7 @@ public class Hauptmenu extends JFrame {
     private JLabel benutzerLabel;
     private RoundedButton quizButton;
     private RoundedButton frageHinzufuegenButton;
+    private RoundedButton frageLoeschenButton;
     private JPanel buttonPanel;
 
     public Hauptmenu() {
@@ -72,14 +72,15 @@ public class Hauptmenu extends JFrame {
         add(benutzerLabel, BorderLayout.SOUTH);
         benutzerLabel.setBackground((StyleManager.getColor("", Color.BLACK)));
 
-
         quizButton = new RoundedButton("Quiz starten", 30);
         frageHinzufuegenButton = new RoundedButton("Frage hinzufügen", 30);
+        frageLoeschenButton = new RoundedButton("Frage löschen", 30);
 
-        buttonPanel = new JPanel(new GridLayout(2, 1, 10, 10));
+        buttonPanel = new JPanel(new GridLayout(3, 1, 10, 10));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(30, 50, 30, 50));
         buttonPanel.add(quizButton);
         buttonPanel.add(frageHinzufuegenButton);
+        buttonPanel.add(frageLoeschenButton);
         add(buttonPanel, BorderLayout.CENTER);
 
         quizButton.addActionListener(e -> {
@@ -107,6 +108,10 @@ public class Hauptmenu extends JFrame {
         frageHinzufuegenButton.addActionListener(e -> {
             new QuizEingabe();
             dispose();
+        });
+
+        frageLoeschenButton.addActionListener(e -> {
+            SwingUtilities.invokeLater(QuizLoeschen::new); // Öffnet das Fenster zum Löschen von Fragen
         });
 
         JMenuBar menuBar = new JMenuBar();
@@ -167,17 +172,14 @@ public class Hauptmenu extends JFrame {
         JMenu profilMenu = new JMenu("Profil");
         JMenuItem ausloggenItem = new JMenuItem("Ausloggen");
         ausloggenItem.addActionListener(e -> {
-                    new Login();
-                    dispose();
-                });
-
-
+            new Login();
+            dispose();
+        });
 
         shortcutItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK));
         farbschemaItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK));
         textfarbeItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK));
         ausloggenItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK));
-
 
         hilfeMenu.add(shortcutItem);
         personalisierungMenu.add(farbschemaItem);
@@ -224,10 +226,10 @@ public class Hauptmenu extends JFrame {
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_1, KeyEvent.VK_Q -> quizButton.doClick(); // 1 für Quiz starten
                     case KeyEvent.VK_2, KeyEvent.VK_F -> frageHinzufuegenButton.doClick(); // 2 für Frage hinzufügen
+                    case KeyEvent.VK_3, KeyEvent.VK_L -> frageLoeschenButton.doClick(); // 3 für Frage löschen
                 }
             }
         });
-
 
         setVisible(true);
         aktualisiereFonts();
@@ -245,6 +247,7 @@ public class Hauptmenu extends JFrame {
         benutzerLabel.setFont(new Font("Arial", Font.BOLD, labelFontSize));
         quizButton.setFont(new Font("Arial", Font.BOLD, buttonFontSize));
         frageHinzufuegenButton.setFont(new Font("Arial", Font.BOLD, buttonFontSize));
+        frageLoeschenButton.setFont(new Font("Arial", Font.BOLD, buttonFontSize));
     }
 
     private void aktualisiereFarben() {
@@ -266,9 +269,8 @@ public class Hauptmenu extends JFrame {
         titelLabel.setForeground(textColor);
         quizButton.setForeground(textColor);
         frageHinzufuegenButton.setForeground(textColor);
+        frageLoeschenButton.setForeground(textColor);
     }
-
-
 
     public static void main(String[] args) {
         StyleManager.loadConfig("config.properties");
