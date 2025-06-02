@@ -3,7 +3,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-
+import java.util.ArrayList;
+import java.util.List;
 // Definition der Klasse Login, die ein Fenster (JFrame) darstellt
 public class Login extends JFrame {
 
@@ -12,6 +13,12 @@ public class Login extends JFrame {
 
     // Konstruktor für das Login-Fenster
     public Login() {
+
+        boolean cursorLoaded = CustomCursorManager.loadCursor("cursor.png", 16, 8);
+        if (!cursorLoaded) {
+            System.out.println("Cursor konnte nicht geladen werden - verwende Standard");
+        }
+
         // Setzt den Titel des Fensters
         setTitle("Login");
 
@@ -169,32 +176,42 @@ public class Login extends JFrame {
             }
         });
 
+        if (CustomCursorManager.isLoaded()) {
+            CustomCursorManager.setCursorEverywhere();
+        }
+
         // Macht das Fenster sichtbar
         setVisible(true);
     }
 
+    // Prüft, ob ein Benutzer bereits existiert (inklusive Punktefeld)
     private boolean userExists(String username) throws IOException {
         File file = new File(FILE_NAME);
         if (!file.exists()) return false;
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(":", 2);
-                if (parts.length == 2 && parts[0].equals(username)) {
+                // In 3 Teile aufteilen: username : verschlüsseltesPasswort : punkte
+                String[] parts = line.split(":", 3);
+                if (parts.length >= 1 && parts[0].equals(username)) {
                     return true;
                 }
             }
         }
         return false;
     }
+
+    // Registriert einen neuen Benutzer mit initial 0 Punkten
     private void registerUser(String username, String password) throws IOException {
         String encryptedPassword = Verschlüsselung.caesarEncrypt(password, KEY);
+        int points = 0; // Startpunkte
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
-            writer.write(username + ":" + encryptedPassword);
+            writer.write(username + ":" + encryptedPassword + ":" + points);
             writer.newLine();
         }
     }
 
+    // Meldet einen Benutzer an und liest dessen Punkte aus (falls vorhanden)
     private boolean loginUser(String username, String password) throws IOException {
         File file = new File(FILE_NAME);
         if (!file.exists()) return false;
@@ -202,18 +219,63 @@ public class Login extends JFrame {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(":", 2);
-                if (parts.length != 2) continue;
+                // In 3 Teile aufteilen: username : verschlüsseltesPasswort : punkte
+                String[] parts = line.split(":", 3);
+                if (parts.length < 3) continue;
 
                 if (parts[0].equals(username)) {
                     String decryptedPass = Verschlüsselung.caesarDecrypt(parts[1], KEY);
-                    return password.equals(decryptedPass);
+                    if (password.equals(decryptedPass)) {
+                        // Punkte einlesen und in der Benutzerklasse hinterlegen
+                        int points = Integer.parseInt(parts[2]);
+                        Benutzername.points = points;
+                        return true;
+                    }
                 }
             }
         }
         return false;
     }
 
+    // Aktualisiert die Punkte eines bestehenden Benutzers in der Datei
+    public static void updateUserPoints(String username, int newPoints) throws IOException {
+        File file = new File(FILE_NAME);
+        if (!file.exists()) {
+            throw new FileNotFoundException("User file not found.");
+        }
+
+        // Alle Zeilen einlesen
+        List<String> lines = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(":", 3);
+                if (parts.length < 3) {
+                    // Behalte fehlerhafte Zeilen bei (oder ignoriere sie)
+                    lines.add(line);
+                    continue;
+                }
+
+                if (parts[0].equals(username)) {
+                    // Ersetze das Punktefeld durch newPoints
+                    String updatedLine = parts[0] + ":" + parts[1] + ":" + newPoints;
+                    lines.add(updatedLine);
+                    // Setze auch die Punkte im Benutzerobjekt
+                    Benutzername.points = newPoints;
+                } else {
+                    lines.add(line);
+                }
+            }
+        }
+
+        // Alle Zeilen zurück in die Datei schreiben (Überschreiben)
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, false))) {
+            for (String l : lines) {
+                writer.write(l);
+                writer.newLine();
+            }
+        }
+    }
 
     // Main-Methode zum Starten der Anwendung
     public static void main(String[] args) {
@@ -223,4 +285,6 @@ public class Login extends JFrame {
         // Starte die Login-GUI im Event-Dispatch-Thread
         SwingUtilities.invokeLater(Login::new);
     }
+
+    // Konstruktor und weitere GUI-Logik hier (nicht gezeigt)
 }

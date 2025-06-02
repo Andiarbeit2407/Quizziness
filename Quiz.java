@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 import java.util.List;
 
 public abstract class Quiz extends JFrame {
@@ -15,6 +16,12 @@ public abstract class Quiz extends JFrame {
     protected int gesamtPunkte = 0;
 
     public Quiz() {
+
+        boolean cursorLoaded = CustomCursorManager.loadCursor("cursor.png", 16, 8);
+        if (!cursorLoaded) {
+            System.out.println("Cursor konnte nicht geladen werden - verwende Standard");
+        }
+
         fragenListe = QuizLader.ladeAlleFragen(getFragenDatei());
         // Quiz-Hintergrundmusik starten
         MusicManager.playBackgroundMusic("quiz_background");
@@ -143,6 +150,7 @@ public abstract class Quiz extends JFrame {
                     case KeyEvent.VK_4 -> antwortD.doClick();
                     case KeyEvent.VK_ENTER, KeyEvent.VK_S -> FrageUeberspringenButton.doClick();
                     case KeyEvent.VK_ESCAPE, KeyEvent.VK_B -> {
+                        MusicManager.stopCurrentMusic();
                         dispose();
                         new Hauptmenu();
                     }
@@ -155,6 +163,11 @@ public abstract class Quiz extends JFrame {
         getContentPane().add(statusLabel, BorderLayout.SOUTH);
 
         setExtendedState(JFrame.MAXIMIZED_BOTH);
+
+        if (CustomCursorManager.isLoaded()) {
+            CustomCursorManager.setCursorEverywhere();
+        }
+
         setVisible(true);
 
         starteTimer(frageFeld, antwortA, antwortB, antwortC, antwortD);
@@ -241,6 +254,11 @@ public abstract class Quiz extends JFrame {
         if (aktuelleFrageIndex >= fragenListe.size()) {
             MusicManager.stopCurrentMusic(); // Musik stoppen
             JOptionPane.showMessageDialog(this, "Quiz beendet.\nEndpunktestand: " + punkte + "/" + gesamtPunkte);
+            try {
+                Login.updateUserPoints(Benutzername.username, (Benutzername.points + punkte));
+            } catch (IOException e) {
+                e.printStackTrace(); // oder eine sinnvolle Fehlerbehandlung
+            }
             dispose();
             new Hauptmenu();
             return;
@@ -287,6 +305,7 @@ public abstract class Quiz extends JFrame {
     public static class Main {
         public static void main(String[] args) {
             StyleManager.loadConfig("config.properties");
+            MusicManager.stopCurrentMusic();
             SwingUtilities.invokeLater(Hauptmenu::new);
         }
     }

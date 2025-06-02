@@ -13,6 +13,12 @@ public class QuizEingabe extends JFrame {
 	private JComboBox<String> kategorieAuswahl;
 
 	public QuizEingabe() {
+
+		boolean cursorLoaded = CustomCursorManager.loadCursor("cursor.png", 16, 8);
+		if (!cursorLoaded) {
+			System.out.println("Cursor konnte nicht geladen werden - verwende Standard");
+		}
+
 		setTitle("Quiz Eingabe");
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setSize(600, 500);
@@ -24,7 +30,7 @@ public class QuizEingabe extends JFrame {
 
 		// Kategorieauswahl
 		panel.add(new JLabel("Kategorie:"));
-		String[] kategorien = {"Mathe", "Geschichte", "Technik"};
+		String[] kategorien = {"Lebewesen", "Naturwissenschaften"};
 		kategorieAuswahl = new JComboBox<>(kategorien);
 		panel.add(kategorieAuswahl);
 
@@ -75,21 +81,25 @@ public class QuizEingabe extends JFrame {
 		ActionMap actionMap = panel.getActionMap();
 
 // Taste 1, L oder ENTER → Login
-		inputMap.put(KeyStroke.getKeyStroke("ENTER"), "login");
-		actionMap.put("login", new AbstractAction() {
+		inputMap.put(KeyStroke.getKeyStroke("ENTER"), "save");
+		actionMap.put("save", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				speichernButton.doClick();
 			}
 		});
 
-		inputMap.put(KeyStroke.getKeyStroke("ESCAPE"), "register");
-		actionMap.put("register", new AbstractAction() {
+		inputMap.put(KeyStroke.getKeyStroke("ESCAPE"), "back");
+		actionMap.put("back", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				zurueckButton.doClick();
 			}
 		});
+
+		if (CustomCursorManager.isLoaded()) {
+			CustomCursorManager.setCursorEverywhere();
+		}
 
 		setVisible(true);
 	}
@@ -128,14 +138,11 @@ public class QuizEingabe extends JFrame {
 		String kategorie = (String) kategorieAuswahl.getSelectedItem();
 			String dateiname;
 			switch (kategorie) {
-				case "Mathe":
-					dateiname = "Mathe.txt";
+				case "Lebewesen":
+					dateiname = "Lebewesen.txt";
 					break;
-				case "Geschichte":
-					dateiname = "Geschichte.txt";
-					break;
-				case "Technik":
-					dateiname = "Technik.txt";
+				case "Naturwissenschaften":
+					dateiname = "Naturwissenschaften.txt";
 					break;
 				default:
 					dateiname = "fragen.txt";

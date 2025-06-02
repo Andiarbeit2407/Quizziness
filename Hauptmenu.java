@@ -54,8 +54,15 @@ public class Hauptmenu extends JFrame {
     private RoundedButton frageHinzufuegenButton;
     private RoundedButton frageLoeschenButton;
     private JPanel buttonPanel;
+    private RoundedButton leaderboardButton;
 
     public Hauptmenu() {
+
+        boolean cursorLoaded = CustomCursorManager.loadCursor("cursor.png", 16, 8);
+        if (!cursorLoaded) {
+            System.out.println("Cursor konnte nicht geladen werden - verwende Standard");
+        }
+
         setTitle("Quiz Hauptmenü");
         setSize(800, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -66,7 +73,7 @@ public class Hauptmenu extends JFrame {
         titelLabel.setFont(new Font("Arial", Font.BOLD, 20));
         add(titelLabel, BorderLayout.NORTH);
 
-        benutzerLabel = new JLabel("Angemeldet als: " + Benutzername.username);
+        benutzerLabel = new JLabel("Angemeldet als: " + Benutzername.username + " | Gesamte Punktzahl: " + Benutzername.points);
         benutzerLabel.setHorizontalAlignment(SwingConstants.LEFT);
         benutzerLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 10));
         add(benutzerLabel, BorderLayout.SOUTH);
@@ -75,16 +82,18 @@ public class Hauptmenu extends JFrame {
         quizButton = new RoundedButton("Quiz starten", 30);
         frageHinzufuegenButton = new RoundedButton("Frage hinzufügen", 30);
         frageLoeschenButton = new RoundedButton("Frage löschen", 30);
+        leaderboardButton = new RoundedButton("Leaderboard anzeigen", 30); // New button
 
-        buttonPanel = new JPanel(new GridLayout(3, 1, 10, 10));
+        buttonPanel = new JPanel(new GridLayout(4, 1, 10, 10));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(30, 50, 30, 50));
         buttonPanel.add(quizButton);
         buttonPanel.add(frageHinzufuegenButton);
         buttonPanel.add(frageLoeschenButton);
+        buttonPanel.add(leaderboardButton);
         add(buttonPanel, BorderLayout.CENTER);
 
         quizButton.addActionListener(e -> {
-            String[] kategorien = {"Mathe", "Geschichte", "Technik"};
+            String[] kategorien = {"Lebewesen", "Naturwissenschaften"};
             String auswahl = (String) JOptionPane.showInputDialog(
                     Hauptmenu.this,
                     "Wähle eine Quiz-Kategorie:",
@@ -97,9 +106,8 @@ public class Hauptmenu extends JFrame {
             if (auswahl != null) {
                 dispose();
                 switch (auswahl) {
-                    case "Mathe" -> new MatheQuiz();
-                    case "Geschichte" -> new GeschichteQuiz();
-                    case "Technik" -> new TechnikQuiz();
+                    case "Lebewesen" -> new LebewesenQuiz();
+                    case "Naturwissenschaften" -> new NaturwissenschaftenQuiz();
                     default -> JOptionPane.showMessageDialog(Hauptmenu.this, "Unbekannte Kategorie.");
                 }
             }
@@ -172,6 +180,7 @@ public class Hauptmenu extends JFrame {
             panel.add(okButton, BorderLayout.SOUTH);
 
             volumeDialog.add(panel);
+
             volumeDialog.setVisible(true);
         });
 
@@ -195,6 +204,10 @@ public class Hauptmenu extends JFrame {
             }
 
             aktualisiereFarben();
+        });
+
+        leaderboardButton.addActionListener(e -> {
+            new Leaderboard();  // Opens the leaderboard window
         });
 
         JMenuItem textfarbeItem = new JMenuItem("Textfarbe wählen...");
@@ -239,6 +252,13 @@ public class Hauptmenu extends JFrame {
             new Login();
             dispose();
         });
+
+        // Schriftgröße für spezifische Menüs setzen
+        Font menuFont = new Font("Arial", Font.BOLD, 16);
+        personalisierungMenu.setFont(menuFont);
+        audioMenu.setFont(menuFont);
+        hilfeMenu.setFont(menuFont);
+        profilMenu.setFont(menuFont);
 
         shortcutItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK));
         farbschemaItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK));
@@ -302,19 +322,46 @@ public class Hauptmenu extends JFrame {
 
         setExtendedState(JFrame.MAXIMIZED_BOTH);
 
-        // Tastenkürzel hinzufügen
-        this.setFocusable(true);
-        this.requestFocusInWindow();
-        this.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                switch (e.getKeyCode()) {
-                    case KeyEvent.VK_1, KeyEvent.VK_Q -> quizButton.doClick(); // 1 für Quiz starten
-                    case KeyEvent.VK_2, KeyEvent.VK_F -> frageHinzufuegenButton.doClick(); // 2 für Frage hinzufügen
-                    case KeyEvent.VK_3, KeyEvent.VK_L -> frageLoeschenButton.doClick(); // 3 für Frage löschen
-                }
+        InputMap im = getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap am = getRootPane().getActionMap();
+
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_1, 0), "quiz");
+        am.put("quiz", new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                quizButton.doClick();
             }
         });
+
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_Q, 0), "quiz");
+
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_2, 0), "hinzufuegen");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_PLUS, 0), "hinzufuegen");
+        am.put("hinzufuegen", new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                frageHinzufuegenButton.doClick();
+            }
+        });
+
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_3, 0), "loeschen");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, 0), "loeschen");
+        am.put("loeschen", new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                frageLoeschenButton.doClick();
+            }
+        });
+
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_4, 0), "leaderboard");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_L, 0), "leaderboard");
+        am.put("leaderboard", new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                leaderboardButton.doClick();
+            }
+        });
+
+
+        if (CustomCursorManager.isLoaded()) {
+            CustomCursorManager.setCursorEverywhere();
+        }
 
         setVisible(true);
         aktualisiereFonts();
@@ -333,6 +380,7 @@ public class Hauptmenu extends JFrame {
         quizButton.setFont(new Font("Arial", Font.BOLD, buttonFontSize));
         frageHinzufuegenButton.setFont(new Font("Arial", Font.BOLD, buttonFontSize));
         frageLoeschenButton.setFont(new Font("Arial", Font.BOLD, buttonFontSize));
+        leaderboardButton.setFont(new Font("Arial",Font.BOLD,buttonFontSize));
     }
 
     private void aktualisiereFarben() {
@@ -355,6 +403,7 @@ public class Hauptmenu extends JFrame {
         quizButton.setForeground(textColor);
         frageHinzufuegenButton.setForeground(textColor);
         frageLoeschenButton.setForeground(textColor);
+        leaderboardButton.setForeground(textColor);
     }
 
     public static void main(String[] args) {
@@ -362,3 +411,4 @@ public class Hauptmenu extends JFrame {
         SwingUtilities.invokeLater(Hauptmenu::new);
     }
 }
+

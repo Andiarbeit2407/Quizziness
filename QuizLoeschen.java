@@ -13,6 +13,12 @@ public class QuizLoeschen extends JFrame {
     private List<String> fragenListe = new ArrayList<>();
 
     public QuizLoeschen() {
+
+        boolean cursorLoaded = CustomCursorManager.loadCursor("cursor.png", 16, 8);
+        if (!cursorLoaded) {
+            System.out.println("Cursor konnte nicht geladen werden - verwende Standard");
+        }
+
         setTitle("Quiz Frage löschen");
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setSize(700, 600);
@@ -25,7 +31,7 @@ public class QuizLoeschen extends JFrame {
         // Kategorieauswahl
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         topPanel.add(new JLabel("Kategorie:"));
-        String[] kategorien = {"Mathe", "Geschichte", "Technik"};
+        String[] kategorien = {"Lebewesen", "Naturwissenschaften"};
         kategorieAuswahl = new JComboBox<>(kategorien);
         kategorieAuswahl.addActionListener(this::ladeFragen);
         topPanel.add(kategorieAuswahl);
@@ -44,7 +50,39 @@ public class QuizLoeschen extends JFrame {
         bottomPanel.add(loeschenButton);
         panel.add(bottomPanel, BorderLayout.SOUTH);
 
+        JButton zurueckButton = new JButton("Zurück zum Hauptmenü");
+        zurueckButton.addActionListener(this::zurueckZumHauptmenue);
+        bottomPanel.add(zurueckButton);
+        panel.add(bottomPanel, BorderLayout.AFTER_LAST_LINE);
+
+
+
         add(panel);
+
+        // In deinem Konstruktor, nach dem Aufbau der GUI:
+        InputMap inputMap = panel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap actionMap = panel.getActionMap();
+
+        inputMap.put(KeyStroke.getKeyStroke("ENTER"), "delete");
+        actionMap.put("delete", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                loeschenButton.doClick();
+            }
+        });
+
+        inputMap.put(KeyStroke.getKeyStroke("ESCAPE"), "back");
+        actionMap.put("back", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                zurueckButton.doClick();
+            }
+        });
+
+        if (CustomCursorManager.isLoaded()) {
+            CustomCursorManager.setCursorEverywhere();
+        }
+
         setVisible(true);
         ladeFragen(null);
     }
@@ -119,11 +157,13 @@ public class QuizLoeschen extends JFrame {
     private String gibDateiname() {
         String kategorie = (String) kategorieAuswahl.getSelectedItem();
         switch (kategorie) {
-            case "Mathe": return "Mathe.txt";
-            case "Geschichte": return "Geschichte.txt";
-            case "Technik": return "Technik.txt";
+            case "Lebewesen": return "Lebewesen.txt";
+            case "Naturwissenschaften": return "Naturwissenschaften.txt";
             default: return "fragen.txt";
         }
+    }
+    private void zurueckZumHauptmenue(ActionEvent e) {
+        dispose();
     }
 
     public static void main(String[] args) {
