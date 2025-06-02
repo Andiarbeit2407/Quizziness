@@ -3,6 +3,7 @@ import java.awt.Font;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Properties;
 
 public class StyleManager {
@@ -17,6 +18,24 @@ public class StyleManager {
             e.printStackTrace();
         }
     }
+    public static String getProperty(String key, String defaultValue) {
+        return props.getProperty(key, defaultValue);
+    }
+
+    public static void setProperty(String key, String value) {
+        props.setProperty(key, value);
+        saveProperties();
+    }
+
+    private static void saveProperties() {
+        try (OutputStream output = new FileOutputStream("config.properties")) {
+            props.store(output, null);
+        } catch (IOException e) {
+            System.err.println("Fehler beim Speichern der Konfiguration: " + e.getMessage());
+        }
+    }
+
+
 
     // Returns a color from the config or a fallback if not found or invalid
     public static Color getColor(String key, Color fallback) {

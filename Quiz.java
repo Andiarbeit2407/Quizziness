@@ -16,6 +16,8 @@ public abstract class Quiz extends JFrame {
 
     public Quiz() {
         fragenListe = QuizLader.ladeAlleFragen(getFragenDatei());
+        // Quiz-Hintergrundmusik starten
+        MusicManager.playBackgroundMusic("quiz_background");
 
         if (fragenListe.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Keine Fragen gefunden!");
@@ -41,40 +43,9 @@ public abstract class Quiz extends JFrame {
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.gridwidth = 1;
+        gbc.gridwidth = 2;
         gbc.weightx = 0.8;
         panel.add(frageFeld, gbc);
-
-        // Neuer Button "Frage hinzufügen"
-        JButton frageHinzufuegenButton = new JButton("Frage hinzufügen");
-
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        gbc.weightx = 0.2;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        panel.add(frageHinzufuegenButton, gbc);
-
-        frageHinzufuegenButton.addActionListener(e -> {
-            String neueFrage = JOptionPane.showInputDialog(this, "Neue Frage eingeben:");
-            if (neueFrage != null && !neueFrage.trim().isEmpty()) {
-                // Beispiel: nur in Runtime hinzufügen (nicht gespeichert)
-                fragenListe.add(new QuizDaten(neueFrage, new String[]{"Antwort A", "Antwort B", "Antwort C", "Antwort D"}, new boolean[]{true, false, false, false}, 30));
-                JOptionPane.showMessageDialog(this, "Frage hinzugefügt (nur temporär).");
-            }
-        });
-
-        // Neuer Button "Frage löschen"
-        JButton frageLoeschenButton = new JButton("Frage löschen");
-
-        gbc.gridx = 2;
-        gbc.gridy = 0;
-        gbc.weightx = 0.2;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        panel.add(frageLoeschenButton, gbc);
-
-        frageLoeschenButton.addActionListener(e -> {
-            new QuizLoeschen(); // Öffnet das Fenster zum Löschen von Fragen
-        });
 
         // Antwort Buttons
         JButton antwortA = new JButton(fragenListe.get(aktuelleFrageIndex).antworten[0]);
@@ -108,6 +79,8 @@ public abstract class Quiz extends JFrame {
 
         hauptmenuButton.addActionListener(e -> {
             if (timer != null) timer.stop();
+            // Zurück zur Menü-Musik wechseln
+            MusicManager.playBackgroundMusic("menu_background");
             dispose();
             new Hauptmenu();
         });
@@ -154,7 +127,7 @@ public abstract class Quiz extends JFrame {
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                aktualisiereFonts(frageFeld, new JButton[]{antwortA, antwortB, antwortC, antwortD, hauptmenuButton, FrageUeberspringenButton, frageHinzufuegenButton, frageLoeschenButton});
+                aktualisiereFonts(frageFeld, new JButton[]{antwortA, antwortB, antwortC, antwortD, hauptmenuButton, FrageUeberspringenButton});
             }
         });
 
@@ -266,11 +239,13 @@ public abstract class Quiz extends JFrame {
 
         aktuelleFrageIndex++;
         if (aktuelleFrageIndex >= fragenListe.size()) {
+            MusicManager.stopCurrentMusic(); // Musik stoppen
             JOptionPane.showMessageDialog(this, "Quiz beendet.\nEndpunktestand: " + punkte + "/" + gesamtPunkte);
             dispose();
             new Hauptmenu();
             return;
         }
+
 
         QuizDaten naechsteFrage = fragenListe.get(aktuelleFrageIndex);
         frageFeld.setText(naechsteFrage.frage);

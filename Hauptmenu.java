@@ -107,7 +107,6 @@ public class Hauptmenu extends JFrame {
 
         frageHinzufuegenButton.addActionListener(e -> {
             new QuizEingabe();
-            dispose();
         });
 
         frageLoeschenButton.addActionListener(e -> {
@@ -116,6 +115,70 @@ public class Hauptmenu extends JFrame {
 
         JMenuBar menuBar = new JMenuBar();
         JMenu personalisierungMenu = new JMenu("Personalisierung");
+        // Audio-Menü erstellen
+        JMenu audioMenu = new JMenu("Audio");
+
+        // Musik Ein/Aus Toggle
+        JCheckBoxMenuItem musikToggle = new JCheckBoxMenuItem("Musik aktiviert", MusicManager.isMusicEnabled());
+        musikToggle.addActionListener(e -> {
+            MusicManager.setMusicEnabled(musikToggle.isSelected());
+            if (musikToggle.isSelected()) {
+                MusicManager.playBackgroundMusic("menu_background");
+            }
+        });
+
+        // Pause/Resume Button
+        JMenuItem pauseResumeItem = new JMenuItem("Musik pausieren");
+        pauseResumeItem.addActionListener(e -> {
+            if (MusicManager.isCurrentlyPlaying()) {
+                MusicManager.pauseCurrentMusic();
+                pauseResumeItem.setText("Musik fortsetzen");
+            } else {
+                MusicManager.resumeCurrentMusic();
+                pauseResumeItem.setText("Musik pausieren");
+            }
+        });
+
+        // Lautstärke-Dialog
+        JMenuItem lautstaerkeItem = new JMenuItem("Lautstärke einstellen...");
+        lautstaerkeItem.addActionListener(e -> {
+            JDialog volumeDialog = new JDialog(this, "Lautstärke", true);
+            volumeDialog.setSize(300, 150);
+            volumeDialog.setLocationRelativeTo(this);
+
+            JPanel panel = new JPanel(new BorderLayout(10, 10));
+            panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+            JLabel label = new JLabel("Lautstärke: " + Math.round(MusicManager.getMasterVolume() * 100) + "%");
+            label.setHorizontalAlignment(SwingConstants.CENTER);
+
+            JSlider volumeSlider = new JSlider(0, 100, Math.round(MusicManager.getMasterVolume() * 100));
+            volumeSlider.setMajorTickSpacing(25);
+            volumeSlider.setMinorTickSpacing(5);
+            volumeSlider.setPaintTicks(true);
+            volumeSlider.setPaintLabels(true);
+
+            volumeSlider.addChangeListener(e2 -> {
+                float volume = volumeSlider.getValue() / 100f;
+                MusicManager.setMasterVolume(volume);
+                label.setText("Lautstärke: " + volumeSlider.getValue() + "%");
+            });
+
+            JButton okButton = new JButton("OK");
+            okButton.addActionListener(e3 -> volumeDialog.dispose());
+
+            panel.add(label, BorderLayout.NORTH);
+            panel.add(volumeSlider, BorderLayout.CENTER);
+            panel.add(okButton, BorderLayout.SOUTH);
+
+            volumeDialog.add(panel);
+            volumeDialog.setVisible(true);
+        });
+
+        // Shortcuts für Audio-Menü Items
+        musikToggle.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK));
+        pauseResumeItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK));
+        lautstaerkeItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK));
 
         JMenuItem farbschemaItem = new JMenuItem("Farbschema ändern...");
         farbschemaItem.addActionListener(e -> {
@@ -172,6 +235,7 @@ public class Hauptmenu extends JFrame {
         JMenu profilMenu = new JMenu("Profil");
         JMenuItem ausloggenItem = new JMenuItem("Ausloggen");
         ausloggenItem.addActionListener(e -> {
+            MusicManager.stopCurrentMusic(); // Musik stoppen
             new Login();
             dispose();
         });
@@ -184,10 +248,17 @@ public class Hauptmenu extends JFrame {
         hilfeMenu.add(shortcutItem);
         personalisierungMenu.add(farbschemaItem);
         profilMenu.add(ausloggenItem);
-        personalisierungMenu.add(textfarbeItem);
+        // Items zum Menü hinzufügen
+        audioMenu.add(musikToggle);
+        audioMenu.add(pauseResumeItem);
+        audioMenu.addSeparator();
+        audioMenu.add(lautstaerkeItem);
+        // Audio-Menü zur Menüleiste hinzufügen (nach Profil, vor Personalisierung z. B.)
         menuBar.add(profilMenu);
+        menuBar.add(audioMenu);  // ← hier zwischen Profil und Personalisierung
         menuBar.add(personalisierungMenu);
         menuBar.add(hilfeMenu);
+        personalisierungMenu.add(textfarbeItem);
         setJMenuBar(menuBar);
 
         ImageIcon icon = new ImageIcon("Quizziness162.png");
@@ -205,6 +276,20 @@ public class Hauptmenu extends JFrame {
                 comp.setForeground(textColor);
             }
         }
+        // Musik beim Start initialisieren und abspielen
+        MusicManager.initializeMusic();
+        if (MusicManager.isMusicEnabled()) {
+            MusicManager.playBackgroundMusic("menu_background");
+        }
+
+        // Beim Schließen Musik stoppen
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                MusicManager.stopCurrentMusic();
+                System.exit(0);
+            }
+        });
 
         aktualisiereTextfarben();
 

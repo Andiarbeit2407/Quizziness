@@ -14,7 +14,7 @@ public class QuizLoeschen extends JFrame {
 
     public QuizLoeschen() {
         setTitle("Quiz Frage löschen");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setSize(700, 600);
         setLocationRelativeTo(null);
 

@@ -7,17 +7,28 @@ Einfg		->	Registrieren
 Hauptmenü:
 ------------------------------------------------------------------------
 1/Q		->	Quiz starten
-2/F		->	Frage hinzufügen
+2/+		->	Frage hinzufügen
+3/-		->	Frage löschen			NV
+4/B		->	Bestenliste aufrufen			NV
+Ctrl+Shift+B	->	Ausloggen
+Ctrl+Shift+M	->	Musik Stummschalten
+Ctrl+Shift+P	->	Musik Pausieren
+Ctrl+Shift+V	->	Musik Lautstärke ändern
 Ctrl+Shift+T	->	Textfarbe ändern
 Ctrl+Shift+C	->	Farbschema ändern
 Ctrl+Shift+S	->	Shortcut-Fenster aufrufen
-Ctrl+Shift+B	->	Ausloggen
+
 
 Frage hinzufügen:
 ------------------------------------------------------------------------
 Tab		->	Allgemeine Navigation
 Enter		->	Frage hinzufügen
 Escape		->	Zurück zum Hauptmenü
+
+Frage löschen:
+------------------------------------------------------------------------
+Tab		->	Allgemeine Navigation		NV
+Enter		->	Frage Löschen			NV
 
 Quiz:
 ------------------------------------------------------------------------

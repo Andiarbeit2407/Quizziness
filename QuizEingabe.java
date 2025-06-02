@@ -14,7 +14,7 @@ public class QuizEingabe extends JFrame {
 
 	public QuizEingabe() {
 		setTitle("Quiz Eingabe");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setSize(600, 500);
 		setLocationRelativeTo(null);
 
@@ -164,7 +164,6 @@ public class QuizEingabe extends JFrame {
 
 	private void zurueckZumHauptmenue(ActionEvent e) {
 		dispose();
-		new Hauptmenu();
 	}
 
 	// Main-Methode (optional, falls direkt testbar)
