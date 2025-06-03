@@ -82,7 +82,7 @@ public class Hauptmenu extends JFrame {
         nachrichtenfeld = new JTextArea();
         nachrichtenfeld.setFont(new Font("Arial", Font.BOLD, 14));
         nachrichtenfeld.setEditable(false);
-        nachrichtenfeld.setOpaque(true);
+        nachrichtenfeld.setOpaque(false);
         nachrichtenfeld.setWrapStyleWord(false);
         nachrichtenfeld.setLineWrap(false);
         nachrichtenfeld.setText("Allgemeine Infos: \n Musik aus Hit Indie-Videospiel Undertale \n Unser Programmierteam: \n Ipek, Ekin, Simon, Andreas, Maja, Colin \nP.S. Bei uns gibt's sogar Shortcuts!");
@@ -441,9 +441,9 @@ public class Hauptmenu extends JFrame {
 
         // Header-Elemente färben
         nachrichtenfeld.setBackground(Color.decode("#EEEEEE"));
-        nachrichtenfeld.setForeground(text);
+        nachrichtenfeld.setForeground(Color.BLACK);
         zeitLabel.setBackground(secondary);
-        zeitLabel.setForeground(text);
+        zeitLabel.setForeground(Color.BLACK);
     }
 
     private void aktualisiereTextfarben() {
@@ -453,9 +453,7 @@ public class Hauptmenu extends JFrame {
         frageHinzufuegenButton.setForeground(textColor);
         frageLoeschenButton.setForeground(textColor);
         leaderboardButton.setForeground(textColor);
-        zeitLabel.setForeground(textColor);
         nachrichtenfeld.setBackground(StyleManager.getColor("secondary.color", Color.LIGHT_GRAY));
-        nachrichtenfeld.setForeground(textColor);
     }
 
     public static void main(String[] args) {
