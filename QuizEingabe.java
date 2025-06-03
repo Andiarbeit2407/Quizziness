@@ -30,7 +30,7 @@ public class QuizEingabe extends JFrame {
 
 		// Kategorieauswahl
 		panel.add(new JLabel("Kategorie:"));
-		String[] kategorien = {"Lebewesen", "Naturwissenschaften"};
+		String[] kategorien = {"Lebewesen", "Naturwissenschaften", "Mathematik", "Allgemeinwissen", "Benutzer"};
 		kategorieAuswahl = new JComboBox<>(kategorien);
 		panel.add(kategorieAuswahl);
 
@@ -143,6 +143,15 @@ public class QuizEingabe extends JFrame {
 					break;
 				case "Naturwissenschaften":
 					dateiname = "Naturwissenschaften.txt";
+					break;
+				case "Mathematik":
+					dateiname = "Mathematik.txt";
+					break;
+				case "Allgemeinwissen":
+					dateiname = "Allgemeinwissen.txt";
+					break;
+				case "Benutzer":
+					dateiname = "Benutzer.txt";
 					break;
 				default:
 					dateiname = "fragen.txt";

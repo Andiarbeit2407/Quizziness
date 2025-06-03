@@ -31,7 +31,8 @@ public abstract class Quiz extends JFrame {
 
         if (fragenListe.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Keine Fragen gefunden!");
-            return;
+            MusicManager.stopCurrentMusic();
+            new Hauptmenu();
         }
 
         setTitle("Quiz");
@@ -89,8 +90,7 @@ public abstract class Quiz extends JFrame {
 
         hauptmenuButton.addActionListener(e -> {
             if (timer != null) timer.stop();
-            // Zurück zur Menü-Musik wechseln
-            MusicManager.playBackgroundMusic("menu_background");
+            MusicManager.stopCurrentMusic();
             dispose();
             new Hauptmenu();
         });

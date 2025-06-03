@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 // Runde Button-Klasse
 class RoundedButton extends JButton {
@@ -55,6 +57,9 @@ public class Hauptmenu extends JFrame {
     private RoundedButton frageLoeschenButton;
     private JPanel buttonPanel;
     private RoundedButton leaderboardButton;
+    private JTextArea nachrichtenfeld;
+    private JLabel zeitLabel;
+    private Timer zeitTimer;
 
     public Hauptmenu() {
 
@@ -69,9 +74,46 @@ public class Hauptmenu extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
+        // Header Panel mit drei Bereichen erstellen
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+
+        // Linkes Nachrichtenfeld (ohne Scroll)
+        nachrichtenfeld = new JTextArea();
+        nachrichtenfeld.setFont(new Font("Arial", Font.BOLD, 14));
+        nachrichtenfeld.setEditable(false);
+        nachrichtenfeld.setOpaque(true);
+        nachrichtenfeld.setWrapStyleWord(false);
+        nachrichtenfeld.setLineWrap(false);
+        nachrichtenfeld.setText("Allgemeine Infos: \n Musik aus Hit Indie-Videospiel Undertale \n Unser Programmierteam: \n Ipek, Ekin, Simon, Andreas, Maja, Colin \nP.S. Bei uns gibt's sogar Shortcuts!");
+        nachrichtenfeld.setPreferredSize(new Dimension(400, 30));
+
+        // Logo in der Mitte
+        ImageIcon icon = new ImageIcon("Quizziness162.png");
+        Image skaliertesBild = icon.getImage().getScaledInstance(600, 120, Image.SCALE_DEFAULT);
+        JLabel bildLabel = new JLabel(new ImageIcon(skaliertesBild));
+        bildLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        // Zeit-Label rechts
+        zeitLabel = new JLabel();
+        zeitLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        zeitLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        zeitLabel.setPreferredSize(new Dimension(400, 30));
+        aktualisiereZeit();
+
+        // Timer für Zeit-Updates (jede Sekunde)
+        zeitTimer = new Timer(1000, e -> aktualisiereZeit());
+        zeitTimer.start();
+
+        headerPanel.add(nachrichtenfeld, BorderLayout.WEST);
+        headerPanel.add(bildLabel, BorderLayout.CENTER);
+        headerPanel.add(zeitLabel, BorderLayout.EAST);
+
+        add(headerPanel, BorderLayout.NORTH);
+
         titelLabel = new JLabel("Willkommen zum Quiz!", SwingConstants.CENTER);
         titelLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        add(titelLabel, BorderLayout.NORTH);
+        // Titel-Label nicht mehr hinzufügen, da wir das Header-Panel haben
 
         benutzerLabel = new JLabel("Angemeldet als: " + Benutzername.username + " | Gesamte Punktzahl: " + Benutzername.points);
         benutzerLabel.setHorizontalAlignment(SwingConstants.LEFT);
@@ -82,7 +124,7 @@ public class Hauptmenu extends JFrame {
         quizButton = new RoundedButton("Quiz starten", 30);
         frageHinzufuegenButton = new RoundedButton("Frage hinzufügen", 30);
         frageLoeschenButton = new RoundedButton("Frage löschen", 30);
-        leaderboardButton = new RoundedButton("Leaderboard", 30); // New button
+        leaderboardButton = new RoundedButton("Leaderboard", 30);
 
         buttonPanel = new JPanel(new GridLayout(4, 1, 10, 10));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(30, 50, 30, 50));
@@ -93,7 +135,7 @@ public class Hauptmenu extends JFrame {
         add(buttonPanel, BorderLayout.CENTER);
 
         quizButton.addActionListener(e -> {
-            String[] kategorien = {"Lebewesen", "Naturwissenschaften"};
+            String[] kategorien = {"Lebewesen", "Naturwissenschaften", "Mathematik", "Allgemeinwissen", "Benutzer"};
             String auswahl = (String) JOptionPane.showInputDialog(
                     Hauptmenu.this,
                     "Wähle eine Quiz-Kategorie:",
@@ -108,6 +150,9 @@ public class Hauptmenu extends JFrame {
                 switch (auswahl) {
                     case "Lebewesen" -> new LebewesenQuiz();
                     case "Naturwissenschaften" -> new NaturwissenschaftenQuiz();
+                    case "Mathematik" -> new MathematikQuiz();
+                    case "Allgemeinwissen" -> new AllgemeinwissenQuiz();
+                    case "Benutzer" -> new BenutzerQuiz();
                     default -> JOptionPane.showMessageDialog(Hauptmenu.this, "Unbekannte Kategorie.");
                 }
             }
@@ -118,15 +163,13 @@ public class Hauptmenu extends JFrame {
         });
 
         frageLoeschenButton.addActionListener(e -> {
-            SwingUtilities.invokeLater(QuizLoeschen::new); // Öffnet das Fenster zum Löschen von Fragen
+            SwingUtilities.invokeLater(QuizLoeschen::new);
         });
 
         JMenuBar menuBar = new JMenuBar();
         JMenu personalisierungMenu = new JMenu("Personalisierung");
-        // Audio-Menü erstellen
         JMenu audioMenu = new JMenu("Audio");
 
-        // Musik Ein/Aus Toggle
         JCheckBoxMenuItem musikToggle = new JCheckBoxMenuItem("Musik aktiviert", MusicManager.isMusicEnabled());
         musikToggle.addActionListener(e -> {
             MusicManager.setMusicEnabled(musikToggle.isSelected());
@@ -135,7 +178,6 @@ public class Hauptmenu extends JFrame {
             }
         });
 
-        // Pause/Resume Button
         JMenuItem pauseResumeItem = new JMenuItem("Musik pausieren");
         pauseResumeItem.addActionListener(e -> {
             if (MusicManager.isCurrentlyPlaying()) {
@@ -147,7 +189,6 @@ public class Hauptmenu extends JFrame {
             }
         });
 
-        // Lautstärke-Dialog
         JMenuItem lautstaerkeItem = new JMenuItem("Lautstärke einstellen...");
         lautstaerkeItem.addActionListener(e -> {
             JDialog volumeDialog = new JDialog(this, "Lautstärke", true);
@@ -180,11 +221,9 @@ public class Hauptmenu extends JFrame {
             panel.add(okButton, BorderLayout.SOUTH);
 
             volumeDialog.add(panel);
-
             volumeDialog.setVisible(true);
         });
 
-        // Shortcuts für Audio-Menü Items
         musikToggle.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK));
         pauseResumeItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK));
         lautstaerkeItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK));
@@ -207,7 +246,7 @@ public class Hauptmenu extends JFrame {
         });
 
         leaderboardButton.addActionListener(e -> {
-            new Leaderboard();  // Opens the leaderboard window
+            new Leaderboard();
         });
 
         JMenuItem textfarbeItem = new JMenuItem("Textfarbe wählen...");
@@ -236,7 +275,7 @@ public class Hauptmenu extends JFrame {
             try {
                 File file = new File("shortcuts.txt");
                 if (!file.exists()) {
-                    file.createNewFile(); // optional: Datei anlegen, falls nicht vorhanden
+                    file.createNewFile();
                 }
                 Desktop.getDesktop().open(file);
             } catch (Exception ex) {
@@ -248,12 +287,12 @@ public class Hauptmenu extends JFrame {
         JMenu profilMenu = new JMenu("Profil");
         JMenuItem ausloggenItem = new JMenuItem("Ausloggen");
         ausloggenItem.addActionListener(e -> {
-            MusicManager.stopCurrentMusic(); // Musik stoppen
+            zeitTimer.stop(); // Timer stoppen beim Ausloggen
+            MusicManager.stopCurrentMusic();
             new Login();
             dispose();
         });
 
-        // Schriftgröße für spezifische Menüs setzen
         Font menuFont = new Font("Arial", Font.BOLD, 16);
         personalisierungMenu.setFont(menuFont);
         audioMenu.setFont(menuFont);
@@ -268,24 +307,16 @@ public class Hauptmenu extends JFrame {
         hilfeMenu.add(shortcutItem);
         personalisierungMenu.add(farbschemaItem);
         profilMenu.add(ausloggenItem);
-        // Items zum Menü hinzufügen
         audioMenu.add(musikToggle);
         audioMenu.add(pauseResumeItem);
         audioMenu.addSeparator();
         audioMenu.add(lautstaerkeItem);
-        // Audio-Menü zur Menüleiste hinzufügen (nach Profil, vor Personalisierung z. B.)
         menuBar.add(profilMenu);
-        menuBar.add(audioMenu);  // ← hier zwischen Profil und Personalisierung
+        menuBar.add(audioMenu);
         menuBar.add(personalisierungMenu);
         menuBar.add(hilfeMenu);
         personalisierungMenu.add(textfarbeItem);
         setJMenuBar(menuBar);
-
-        ImageIcon icon = new ImageIcon("Quizziness162.png");
-        Image skaliertesBild = icon.getImage().getScaledInstance(800, 160, Image.SCALE_DEFAULT);
-        JLabel bildLabel = new JLabel(new ImageIcon(skaliertesBild));
-        bildLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        add(bildLabel, BorderLayout.BEFORE_FIRST_LINE);
 
         buttonPanel.setBackground(StyleManager.getColor("primary.color", Color.WHITE));
         Color buttonAndTextBg = StyleManager.getColor("secondary.color", Color.LIGHT_GRAY);
@@ -296,16 +327,16 @@ public class Hauptmenu extends JFrame {
                 comp.setForeground(textColor);
             }
         }
-        // Musik beim Start initialisieren und abspielen
+
         MusicManager.initializeMusic();
         if (MusicManager.isMusicEnabled()) {
             MusicManager.playBackgroundMusic("menu_background");
         }
 
-        // Beim Schließen Musik stoppen
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                zeitTimer.stop(); // Timer stoppen beim Schließen
                 MusicManager.stopCurrentMusic();
                 System.exit(0);
             }
@@ -358,13 +389,18 @@ public class Hauptmenu extends JFrame {
             }
         });
 
-
         if (CustomCursorManager.isLoaded()) {
             CustomCursorManager.setCursorEverywhere();
         }
 
         setVisible(true);
         aktualisiereFonts();
+    }
+
+    private void aktualisiereZeit() {
+        LocalTime aktuelleZeit = LocalTime.now();
+        String zeitString = aktuelleZeit.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+        zeitLabel.setText("      " + zeitString);
     }
 
     private void aktualisiereFonts() {
@@ -380,7 +416,12 @@ public class Hauptmenu extends JFrame {
         quizButton.setFont(new Font("Arial", Font.BOLD, buttonFontSize));
         frageHinzufuegenButton.setFont(new Font("Arial", Font.BOLD, buttonFontSize));
         frageLoeschenButton.setFont(new Font("Arial", Font.BOLD, buttonFontSize));
-        leaderboardButton.setFont(new Font("Arial",Font.BOLD,buttonFontSize));
+        leaderboardButton.setFont(new Font("Arial", Font.BOLD, buttonFontSize));
+
+        // Schriftgrößen für Header-Elemente anpassen
+        int headerFontSize = Math.round(14 * faktor);
+        nachrichtenfeld.setFont(new Font("Arial", Font.PLAIN, 20));
+        zeitLabel.setFont(new Font("Arial", Font.PLAIN, 35));
     }
 
     private void aktualisiereFarben() {
@@ -395,6 +436,12 @@ public class Hauptmenu extends JFrame {
                 comp.setForeground(text);
             }
         }
+
+        // Header-Elemente färben
+        nachrichtenfeld.setBackground(secondary);
+        nachrichtenfeld.setForeground(text);
+        zeitLabel.setBackground(secondary);
+        zeitLabel.setForeground(text);
     }
 
     private void aktualisiereTextfarben() {
@@ -404,6 +451,9 @@ public class Hauptmenu extends JFrame {
         frageHinzufuegenButton.setForeground(textColor);
         frageLoeschenButton.setForeground(textColor);
         leaderboardButton.setForeground(textColor);
+        zeitLabel.setForeground(textColor);
+        nachrichtenfeld.setBackground(StyleManager.getColor("secondary.color", Color.LIGHT_GRAY));
+        nachrichtenfeld.setForeground(textColor);
     }
 
     public static void main(String[] args) {
@@ -411,4 +461,3 @@ public class Hauptmenu extends JFrame {
         SwingUtilities.invokeLater(Hauptmenu::new);
     }
 }
-

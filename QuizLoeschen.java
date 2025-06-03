@@ -31,7 +31,7 @@ public class QuizLoeschen extends JFrame {
         // Kategorieauswahl
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         topPanel.add(new JLabel("Kategorie:"));
-        String[] kategorien = {"Lebewesen", "Naturwissenschaften"};
+        String[] kategorien = {"Lebewesen", "Naturwissenschaften", "Mathematik", "Allgemeinwissen", "Benutzer"};
         kategorieAuswahl = new JComboBox<>(kategorien);
         kategorieAuswahl.addActionListener(this::ladeFragen);
         topPanel.add(kategorieAuswahl);
@@ -159,6 +159,9 @@ public class QuizLoeschen extends JFrame {
         switch (kategorie) {
             case "Lebewesen": return "Lebewesen.txt";
             case "Naturwissenschaften": return "Naturwissenschaften.txt";
+            case "Mathematik": return "Mathematik.txt";
+            case "Allgemeinwissen": return "Allgemeinwissen.txt";
+            case "Benutzer": return "Benutzer.txt";
             default: return "fragen.txt";
         }
     }
