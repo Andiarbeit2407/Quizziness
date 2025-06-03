@@ -88,8 +88,10 @@ public class Hauptmenu extends JFrame {
         nachrichtenfeld.setText("Allgemeine Infos: \n Musik aus Hit Indie-Videospiel Undertale \n Unser Programmierteam: \n Ipek, Ekin, Simon, Andreas, Maja, Colin \nP.S. Bei uns gibt's sogar Shortcuts!");
         nachrichtenfeld.setPreferredSize(new Dimension(400, 30));
 
+
+
         // Logo in der Mitte
-        ImageIcon icon = new ImageIcon("Quizziness162.png");
+        ImageIcon icon = new ImageIcon(getClass().getResource("Quizziness162.png"));
         Image skaliertesBild = icon.getImage().getScaledInstance(600, 120, Image.SCALE_DEFAULT);
         JLabel bildLabel = new JLabel(new ImageIcon(skaliertesBild));
         bildLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -438,7 +440,7 @@ public class Hauptmenu extends JFrame {
         }
 
         // Header-Elemente färben
-        nachrichtenfeld.setBackground(secondary);
+        nachrichtenfeld.setBackground(Color.decode("#EEEEEE"));
         nachrichtenfeld.setForeground(text);
         zeitLabel.setBackground(secondary);
         zeitLabel.setForeground(text);
