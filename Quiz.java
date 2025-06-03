@@ -2,7 +2,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public abstract class Quiz extends JFrame {
 
@@ -231,10 +234,21 @@ public abstract class Quiz extends JFrame {
         if (ausgewaehlteAntwort != 5) {
             boolean istRichtig = aktuelleFrage.loesung[ausgewaehlteAntwort];
             if (istRichtig) {
-                buttons[ausgewaehlteAntwort].setBackground(richtigColor);
                 punkte += timeRemaining;
+                buttons[ausgewaehlteAntwort].setBackground(richtigColor);
             } else {
                 buttons[ausgewaehlteAntwort].setBackground(falschColor);
+                for (boolean t : aktuelleFrage.loesung) {
+                    System.out.println(t);
+                }
+                int indexOfRightAnswer = IntStream.range(0, aktuelleFrage.loesung.length)
+                        .filter(i -> aktuelleFrage.loesung[i])
+                        .findFirst()
+                        .orElse(-1);
+
+
+                System.out.println(indexOfRightAnswer);
+                buttons[indexOfRightAnswer].setBackground(richtigColor);
             }
         }
 

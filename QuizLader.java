@@ -21,8 +21,8 @@ public class QuizLader {
 				boolean[] loesungen = new boolean[4];
 				String loesungsZeile = br.readLine(); // z.B. "Richtige Antworten: A C"
 
-				if (loesungsZeile != null && loesungsZeile.startsWith("Richtige Antworten:")) {
-					String[] teile = loesungsZeile.substring(20).trim().split("\\s+");
+				if (loesungsZeile != null && loesungsZeile.startsWith("Richtige Antwort:")) {
+					String[] teile = loesungsZeile.substring(16).trim().split("\\s+");
 					for (String teil : teile) {
 						char buchstabe = teil.charAt(0);
 						if (buchstabe >= 'A' && buchstabe <= 'D') {

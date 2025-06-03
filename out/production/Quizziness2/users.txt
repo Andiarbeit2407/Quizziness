@@ -1,2 +1,5 @@
-mini-pekka:0,1,N3(..$:59
-root:$'0,1:42069
+mini-pekka:0,1,N3(..$:42069
+root:$'0,1:0
+gp:RSTU:1
+xsyntax:$'0,1:2147483647
+smon:c(1'$:-69

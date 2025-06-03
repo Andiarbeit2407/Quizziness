@@ -82,7 +82,7 @@ public class Hauptmenu extends JFrame {
         quizButton = new RoundedButton("Quiz starten", 30);
         frageHinzufuegenButton = new RoundedButton("Frage hinzufügen", 30);
         frageLoeschenButton = new RoundedButton("Frage löschen", 30);
-        leaderboardButton = new RoundedButton("Leaderboard anzeigen", 30); // New button
+        leaderboardButton = new RoundedButton("Leaderboard", 30); // New button
 
         buttonPanel = new JPanel(new GridLayout(4, 1, 10, 10));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(30, 50, 30, 50));

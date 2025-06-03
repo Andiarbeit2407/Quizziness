@@ -130,10 +130,3 @@ B) Wetterarten
 C) Stoffgruppen
 D) Materieteile
 Richtige Antwort: A
-
-Welche Energieform nutzt ein Solarmodul?
-A) Windenergie
-B) Lichtenergie
-C) Kernenergie
-D) Bewegungsenergie
-Richtige Antwort: B
