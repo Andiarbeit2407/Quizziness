@@ -5,30 +5,40 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Die Klasse QuizLoeschen ermöglicht das Löschen von Fragen aus verschiedenen Kategorien eines Quiz.
+ * Sie bietet eine grafische Benutzeroberfläche zur Auswahl der Kategorie, Anzeige der Fragen und Löschung ausgewählter Fragen.
+ */
 public class QuizLoeschen extends JFrame {
 
-    private JComboBox<String> kategorieAuswahl;
-    private JTextArea fragenAnzeige;
-    private JButton loeschenButton;
-    private List<String> fragenListe = new ArrayList<>();
+    private JComboBox<String> kategorieAuswahl; // Dropdown zur Auswahl der Kategorie
+    private JTextArea fragenAnzeige; // Textbereich zur Anzeige der Fragen
+    private JButton loeschenButton; // Button zum Löschen einer Frage
+    private List<String> fragenListe = new ArrayList<>(); // Liste zur Speicherung der Fragen
 
+    /**
+     * Konstruktor für die QuizLoeschen-Klasse.
+     * Initialisiert das Hauptfenster und fügt die notwendigen Komponenten hinzu.
+     */
     public QuizLoeschen() {
-
+        // Lädt einen benutzerdefinierten Cursor
         boolean cursorLoaded = CustomCursorManager.loadCursor("cursor.png", 16, 8);
         if (!cursorLoaded) {
             System.out.println("Cursor konnte nicht geladen werden - verwende Standard");
         }
 
+        // Fenster-Einstellungen
         setTitle("Quiz Frage löschen");
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setSize(700, 600);
         setLocationRelativeTo(null);
 
+        // Haupt-Panel mit BorderLayout
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout(10, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Kategorieauswahl
+        // Panel für die Kategorieauswahl
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         topPanel.add(new JLabel("Kategorie:"));
         String[] kategorien = {"Lebewesen", "Naturwissenschaften", "Mathematik", "Allgemeinwissen", "Benutzer"};
@@ -37,29 +47,28 @@ public class QuizLoeschen extends JFrame {
         topPanel.add(kategorieAuswahl);
         panel.add(topPanel, BorderLayout.NORTH);
 
-        // Fragenanzeige
+        // Textbereich für die Anzeige der Fragen
         fragenAnzeige = new JTextArea();
         fragenAnzeige.setFont(new Font("Monospaced", Font.PLAIN, 14));
         JScrollPane scrollPane = new JScrollPane(fragenAnzeige);
         panel.add(scrollPane, BorderLayout.CENTER);
 
-        // Button
+        // Panel für die Buttons
         loeschenButton = new JButton("Frage löschen");
         loeschenButton.addActionListener(this::loescheFrage);
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         bottomPanel.add(loeschenButton);
         panel.add(bottomPanel, BorderLayout.SOUTH);
 
+        // Button zum Zurückkehren zum Hauptmenü
         JButton zurueckButton = new JButton("Zurück zum Hauptmenü");
         zurueckButton.addActionListener(this::zurueckZumHauptmenue);
         bottomPanel.add(zurueckButton);
         panel.add(bottomPanel, BorderLayout.AFTER_LAST_LINE);
 
-
-
         add(panel);
 
-        // In deinem Konstruktor, nach dem Aufbau der GUI:
+        // Tastaturkürzel für Löschen und Zurück
         InputMap inputMap = panel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         ActionMap actionMap = panel.getActionMap();
 
@@ -79,6 +88,7 @@ public class QuizLoeschen extends JFrame {
             }
         });
 
+        // Setzt den benutzerdefinierten Cursor, falls geladen
         if (CustomCursorManager.isLoaded()) {
             CustomCursorManager.setCursorEverywhere();
         }
@@ -87,6 +97,11 @@ public class QuizLoeschen extends JFrame {
         ladeFragen(null);
     }
 
+    /**
+     * Lädt die Fragen aus der ausgewählten Kategorie und zeigt sie im Textbereich an.
+     *
+     * @param e Das ActionEvent, das die Methode ausgelöst hat.
+     */
     private void ladeFragen(ActionEvent e) {
         fragenListe.clear();
         fragenAnzeige.setText("");
@@ -120,6 +135,11 @@ public class QuizLoeschen extends JFrame {
         }
     }
 
+    /**
+     * Löscht eine ausgewählte Frage aus der Liste und aktualisiert die Datei.
+     *
+     * @param e Das ActionEvent, das die Methode ausgelöst hat.
+     */
     private void loescheFrage(ActionEvent e) {
         String eingabe = JOptionPane.showInputDialog(this, "Gib die Nummer der zu löschenden Frage ein:");
         if (eingabe == null || eingabe.isEmpty()) return;
@@ -141,6 +161,9 @@ public class QuizLoeschen extends JFrame {
         }
     }
 
+    /**
+     * Schreibt die aktuelle Liste der Fragen zurück in die Datei.
+     */
     private void schreibeFragenInDatei() {
         String dateiname = gibDateiname();
 
@@ -154,6 +177,11 @@ public class QuizLoeschen extends JFrame {
         }
     }
 
+    /**
+     * Gibt den Dateinamen basierend auf der ausgewählten Kategorie zurück.
+     *
+     * @return Der Dateiname der ausgewählten Kategorie.
+     */
     private String gibDateiname() {
         String kategorie = (String) kategorieAuswahl.getSelectedItem();
         switch (kategorie) {
@@ -165,10 +193,21 @@ public class QuizLoeschen extends JFrame {
             default: return "fragen.txt";
         }
     }
+
+    /**
+     * Kehrt zum Hauptmenü zurück.
+     *
+     * @param e Das ActionEvent, das die Methode ausgelöst hat.
+     */
     private void zurueckZumHauptmenue(ActionEvent e) {
         dispose();
     }
 
+    /**
+     * Die main-Methode, die die Anwendung startet.
+     *
+     * @param args Kommandozeilenargumente (werden nicht verwendet).
+     */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(QuizLoeschen::new);
     }

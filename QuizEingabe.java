@@ -334,7 +334,7 @@ public class QuizEingabe extends JFrame {
 				writer.write(answer + "\n");
 			}
 
-			writer.write("Richtige Antworten: ");
+			writer.write("Richtige Antwort: ");
 			for (int i = 0; i < ANSWER_COUNT; i++) {
 				if (data.solutions[i]) {
 					writer.write((char) ('A' + i) + " ");
