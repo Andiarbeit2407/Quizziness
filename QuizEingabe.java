@@ -73,7 +73,7 @@ public class QuizEingabe extends JFrame {
 	private void setupWindow() {
 		setTitle("Quiz Eingabe");
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		setSize(600, 500);
+		setSize(800, 700);
 		setLocationRelativeTo(null);
 	}
 
@@ -81,19 +81,27 @@ public class QuizEingabe extends JFrame {
 	 * Erstellt die UI-Komponenten.
 	 */
 	private void createComponents() {
-		// Eingabefelder erstellen
-		questionField = new JTextField(30);
+		// Eingabefelder erstellen mit größeren Dimensionen
+		questionField = new JTextField(50);
+		questionField.setPreferredSize(new Dimension(600, 35));
+
 		answerFields = new JTextField[ANSWER_COUNT];
 		solutionCheckboxes = new JCheckBox[ANSWER_COUNT];
 
 		for (int i = 0; i < ANSWER_COUNT; i++) {
-			answerFields[i] = new JTextField(20);
+			answerFields[i] = new JTextField(40);
+			answerFields[i].setPreferredSize(new Dimension(500, 35));
 			solutionCheckboxes[i] = new JCheckBox("Richtig");
 		}
 
 		categorySelector = new JComboBox<>(CATEGORIES);
+		categorySelector.setPreferredSize(new Dimension(200, 35));
+
 		saveButton = new JButton("Frage speichern");
+		saveButton.setPreferredSize(new Dimension(200, 45));
+
 		backButton = new JButton("Zurück zum Hauptmenü");
+		backButton.setPreferredSize(new Dimension(200, 45));
 
 		// Action Listener hinzufügen
 		saveButton.addActionListener(this::saveQuestion);
@@ -107,9 +115,11 @@ public class QuizEingabe extends JFrame {
 		JPanel mainPanel = createMainPanel();
 
 		mainPanel.add(createCategorySection());
+		mainPanel.add(Box.createVerticalStrut(15));
 		mainPanel.add(createQuestionSection());
+		mainPanel.add(Box.createVerticalStrut(15));
 		mainPanel.add(createAnswersSection());
-		mainPanel.add(Box.createVerticalStrut(10));
+		mainPanel.add(Box.createVerticalStrut(20));
 		mainPanel.add(createButtonSection());
 
 		add(mainPanel);
@@ -122,7 +132,7 @@ public class QuizEingabe extends JFrame {
 	private JPanel createMainPanel() {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 		return panel;
 	}
 
@@ -132,7 +142,10 @@ public class QuizEingabe extends JFrame {
 	 */
 	private JPanel createCategorySection() {
 		JPanel section = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		section.add(new JLabel("Kategorie:"));
+		JLabel categoryLabel = new JLabel("Kategorie:");
+		categoryLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16));
+		section.add(categoryLabel);
+		section.add(Box.createHorizontalStrut(10));
 		section.add(categorySelector);
 		return section;
 	}
@@ -143,7 +156,10 @@ public class QuizEingabe extends JFrame {
 	 */
 	private JPanel createQuestionSection() {
 		JPanel section = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		section.add(new JLabel("Frage:"));
+		JLabel questionLabel = new JLabel("Frage:");
+		questionLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16));
+		section.add(questionLabel);
+		section.add(Box.createHorizontalStrut(10));
 		section.add(questionField);
 		return section;
 	}
@@ -158,6 +174,9 @@ public class QuizEingabe extends JFrame {
 
 		for (int i = 0; i < ANSWER_COUNT; i++) {
 			section.add(createSingleAnswerPanel(i));
+			if (i < ANSWER_COUNT - 1) {
+				section.add(Box.createVerticalStrut(10));
+			}
 		}
 
 		return section;
@@ -172,8 +191,13 @@ public class QuizEingabe extends JFrame {
 		JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		char answerLetter = (char) ('A' + index);
 
-		panel.add(new JLabel("Antwort " + answerLetter + ":"));
+		JLabel answerLabel = new JLabel("Antwort " + answerLetter + ":");
+		answerLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16));
+
+		panel.add(answerLabel);
+		panel.add(Box.createHorizontalStrut(10));
 		panel.add(answerFields[index]);
+		panel.add(Box.createHorizontalStrut(10));
 		panel.add(solutionCheckboxes[index]);
 
 		return panel;
@@ -184,7 +208,7 @@ public class QuizEingabe extends JFrame {
 	 * @return Das Panel mit den Buttons.
 	 */
 	private JPanel createButtonSection() {
-		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
 		buttonPanel.add(saveButton);
 		buttonPanel.add(backButton);
 		return buttonPanel;
@@ -223,19 +247,60 @@ public class QuizEingabe extends JFrame {
 		Color secondaryBg = StyleManager.getColor("secondary.color", Color.LIGHT_GRAY);
 		Color textColor = StyleManager.getColor("fixedfont.color", Color.WHITE);
 
+		// Größere Schriftarten definieren
+		Font textFieldFont = new Font(Font.SANS_SERIF, Font.BOLD, 16);
+		Font buttonFont = new Font(Font.SANS_SERIF, Font.BOLD, 16);
+		Font comboBoxFont = new Font(Font.SANS_SERIF, Font.BOLD, 16);
+		Font checkBoxFont = new Font(Font.SANS_SERIF, Font.BOLD, 16);
+
+		// Hintergrundfarbe für das Hauptpanel setzen
+		JPanel mainPanel = (JPanel) getContentPane().getComponent(0);
+		mainPanel.setBackground(primaryBg);
+
+		// Alle Sub-Panels ebenfalls auf die Hintergrundfarbe setzen
+		setAllPanelBackgrounds(mainPanel, primaryBg);
+
 		// Stile auf Buttons anwenden
 		saveButton.setBackground(secondaryBg);
 		saveButton.setForeground(textColor);
+		saveButton.setFont(buttonFont);
+
 		backButton.setBackground(secondaryBg);
 		backButton.setForeground(textColor);
+		backButton.setFont(buttonFont);
 
 		// Stile auf Textfelder anwenden
 		questionField.setBackground(secondaryBg);
 		questionField.setForeground(textColor);
+		questionField.setFont(textFieldFont);
 
 		for (JTextField field : answerFields) {
 			field.setBackground(secondaryBg);
 			field.setForeground(textColor);
+			field.setFont(textFieldFont);
+		}
+
+		// Stile auf ComboBox anwenden
+		categorySelector.setFont(comboBoxFont);
+
+		// Stile auf Checkboxen anwenden
+		for (JCheckBox checkBox : solutionCheckboxes) {
+			checkBox.setFont(checkBoxFont);
+			checkBox.setBackground(primaryBg);
+		}
+	}
+
+	/**
+	 * Setzt die Hintergrundfarbe für alle Panels rekursiv.
+	 * @param panel Das Panel, dessen Hintergrund gesetzt werden soll.
+	 * @param color Die zu setzende Hintergrundfarbe.
+	 */
+	private void setAllPanelBackgrounds(Container panel, Color color) {
+		panel.setBackground(color);
+		for (Component component : panel.getComponents()) {
+			if (component instanceof JPanel) {
+				setAllPanelBackgrounds((JPanel) component, color);
+			}
 		}
 	}
 
