@@ -1,0 +1,142 @@
+Was ist das Ergebnis, wenn man 7 mit 8 multipliziert?
+A) 54
+B) 56
+C) 64
+D) 58
+Richtige Antwort: B
+
+Wie nennt man das Ergebnis einer Multiplikation?
+A) Differenz
+B) Summe
+C) Produkt
+D) Quotient
+Richtige Antwort: C
+
+Warum braucht man Variablen in der Mathematik?
+A) Um Zahlen durch Buchstaben zu ersetzen
+B) Weil Rechnen mit Zahlen verboten ist
+C) Damit Formeln länger aussehen
+D) Nur zur Dekoration
+Richtige Antwort: A
+
+Warum ist der Satz des Pythagoras so bedeutend?
+A) Weil er nur in Kreisen gilt
+B) Weil er Dreiecke berechnet
+C) Weil er eine Beziehung zwischen Seitenlängen in rechtwinkligen Dreiecken herstellt ✅
+D) Weil er nur in Geometrie-Tests vorkommt
+Richtige Antwort: C
+
+Wie nennt man eine Funktion mit der Form 𝑓(𝑥)=𝑎𝑥2+𝑏𝑥+𝑐
+A) Lineare Funktion
+B) Exponentialfunktion
+C) Parabel
+D) Quadratische Funktion
+Richtige Antwort: D
+
+Wofür steht das „x“ in einer Gleichung wie 5x=20?
+A) Für eine unbekannte Zahl
+B) Für die Einheit
+C) Für das Ergebnis
+D) Für die Gleichung selbst
+Richtige Antwort: A
+
+Was bedeutet es, wenn eine Funktion „monoton steigend“ ist?
+A) Der Funktionswert bleibt immer gleich
+B) Der Funktionswert wird kleiner
+C) Der Funktionswert steigt
+D) Die Funktion hat keinen Definitionsbereich
+Richtige Antwort: C
+
+Wozu dient das Koordinatensystem in der Mathematik?
+A) Zur Bestimmung von Wahrscheinlichkeiten
+B) Zur Darstellung von Zahlenfolgen
+C) Zur Darstellung von Punkten und Funktionen im Raum
+D) Nur zum Zeichnen von Dreiecken
+Richtige Antwort: C
+
+Wie viele Nullstellen kann eine quadratische Funktion höchstens haben?
+A) 1
+B) 2
+C) 3
+D) 4
+Richtige Antwort: B
+
+Ein Schüler bekommt 8 von 10 Punkten. Wie viel Prozent hat er erreicht?
+A) 70%
+B) 75%
+C) 80%
+D) 85%
+Richtige Antwort: C
+
+ Wenn ein Dreieck zwei gleich lange Seiten hat, wie nennt man es?
+A) Rechtwinkliges Dreieck
+B) Gleichschenkliges Dreieck
+C) Gleichseitiges Dreieck
+D) Zufälliges Dreieck
+Richtige Antwort: B
+
+Wie nennt man den höchsten Punkt einer Parabel?
+A) Nullstelle
+B) Wendepunkt
+C) Scheitelpunkt
+D) Maximumstelle
+Richtige Antwort: C
+
+Was bedeutet „Distributivgesetz“ in der Mathematik?
+A) Zahlen werden getauscht
+B) Klammern werden aufgelöst
+C) Alles wird durch null geteilt
+D) Ergebnisse werden gerundet
+Richtige Antwort: B
+
+Wenn man eine Zahl mit 0 multipliziert, ist das Ergebnis immer …
+A) die Zahl selbst
+B) 1
+C) unendlich
+D) 0
+Richtige Antwort: D
+
+Was bedeutet das Wort „Potenz“ in der Mathematik?
+A) Das Ergebnis einer Subtraktion
+B) Eine hochgestellte Zahl als Wiederholung der Multiplikation
+C) Der Nenner eines Bruchs
+D) Der Mittelwert mehrerer Zahlen
+Richtige Antwort: B
+
+Was versteht man unter einem Bruch mit „gleichen Nennern“?
+A) Der Zähler ist gleich
+B) Beide Brüche sind gleich groß
+C) Die unteren Zahlen (Nenner) sind gleich
+D) Es handelt sich um ganze Zahlen
+Richtige Antwort: C
+
+Warum ist der Satz des Pythagoras nur bei rechtwinkligen Dreiecken anwendbar?
+A) Weil nur dort die Seitenbeziehung a^2+b^2=c gilt
+B) Weil andere Dreiecke keine Seiten haben
+C) Weil er auch bei Vierecken gilt
+D) Weil man ihn nur bei gleichseitigen Dreiecken braucht
+Richtige Antwort: A
+
+Warum ist das Rechnen mit Variablen wichtig?
+A) Weil sie Rechenfehler vermeiden
+B) Weil sie Rechenschritte überspringen
+C) Weil sie erlauben, mit unbekannten Werten zu arbeiten
+D) Weil sie schöner aussehen
+Richtige Antwort: C
+
+Was ist die Quadratwurzel von 121?
+A) 11
+B) 12
+C) 10
+D) 13
+Richtige Antwort: A
+
+Was bedeutet a>b?
+A) a ist kleiner als b
+B) a ist gleich b
+C) a ist größer als b
+D) a ist kleiner oder gleich b
+Richtige Antwort: C
+
+
+
